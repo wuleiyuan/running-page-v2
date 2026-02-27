@@ -238,9 +238,8 @@ const RunMap = ({
     (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
-        if (map && IS_CHINESE) {
+        if (map && IS_CHINESE && MAP_TILE_VENDOR === 'mapbox') {
           map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
-        }
         // all style resources have been downloaded
         // and the first visually complete rendering of the base style has occurred.
         // it's odd. when use style other than mapbox, the style.load event is not triggered.Add commentMore actions
