@@ -229,16 +229,16 @@ export const WALKING_COLOR = HIKING_COLOR;
 export const SWIMMING_COLOR = 'rgb(255,51,51)';
 
 // map tiles vendor, maptiler or mapbox or stadiamaps
-export const MAP_TILE_VENDOR = 'maptiler';
+export const MAP_TILE_VENDOR = 'mapcn';
 
 // map tiles style name, see MAP_TILE_STYLES for more details
-export const MAP_TILE_STYLE_LIGHT = 'streets-light';
-export const MAP_TILE_STYLE_DARK = 'streets-dark';
+export const MAP_TILE_STYLE_LIGHT = 'osm-bright';
+export const MAP_TILE_STYLE_DARK = 'dark-matter';
 
 // access token. you can apply a new one, it's free.
 // maptiler: Gt5R0jT8tuIYxW6sNrAg | sign up at https://cloud.maptiler.com/auth/widget
 // stadiamaps: 8a769c5a-9125-4936-bdcf-a6b90cb5d0a4 | sign up at https://client.stadiamaps.com/signup/
-export const MAP_TILE_ACCESS_TOKEN = '8lAomZ2Nlw9iCBS1nowf';
+export const MAP_TILE_ACCESS_TOKEN = '';
 
 export const MAP_TILE_STYLES = {
   mapcn: {
