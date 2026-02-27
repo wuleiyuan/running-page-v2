@@ -13,7 +13,15 @@ import Map, {
   NavigationControl,
   MapRef,
 } from 'react-map-gl';
+import mapboxgl from 'mapbox-gl';
 import { MapInstance } from 'react-map-gl/src/types/lib';
+
+// Disable mapbox telemetry
+if (typeof window !== 'undefined') {
+  (mapboxgl as any).workerClass = undefined;
+  (mapboxgl as any).prewarm = () => {};
+  (mapboxgl as any).clearPrewarmedResources = () => {};
+}
 import useActivities from '@/hooks/useActivities';
 import {
   IS_CHINESE,
