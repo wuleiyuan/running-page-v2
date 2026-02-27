@@ -1,3 +1,14 @@
+# Running Page (V2 - Vercel Edition)
+
+> **版本更新记录 (2026-02-28)**:
+> - **底层引擎更新**: 从 Mapbox 引擎全面迁移到完全开源无限制的 **MapLibre** 引擎。
+> - **解除限制**: 移除了对 mapbox-gl 和相关 telemetry 的依赖，彻底解决了没有 Mapbox Token 导致的跨域和验证报错问题。
+> - **地图源**: 默认使用免费的 MapCN 瓦片地图服务，无需配置任何 API Token 即可正常渲染。
+> - 本项目作为新一代重构版本，推荐部署在 Vercel。
+
+---
+
+
 ## Note
 
 1. clone or Fork before vercel 404 need to pull the latest code
