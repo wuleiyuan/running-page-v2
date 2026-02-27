@@ -1,27 +1,13 @@
-import MapboxLanguage from '@mapbox/mapbox-gl-language';
-import React, {
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-  useMemo,
-} from 'react';
 import Map, {
   Layer,
   Source,
   FullscreenControl,
   NavigationControl,
   MapRef,
-} from 'react-map-gl';
-import mapboxgl from 'mapbox-gl';
+} from 'react-map-gl/maplibre';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { MapInstance } from 'react-map-gl/src/types/lib';
-
-// Disable mapbox telemetry
-if (typeof window !== 'undefined') {
-  (mapboxgl as any).workerClass = undefined;
-  (mapboxgl as any).prewarm = () => {};
-  (mapboxgl as any).clearPrewarmedResources = () => {};
-}
 import useActivities from '@/hooks/useActivities';
 import {
   IS_CHINESE,
@@ -246,9 +232,6 @@ const RunMap = ({
     (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
-        if (map && IS_CHINESE && MAP_TILE_VENDOR === 'mapbox') {
-          map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
-        }
         // all style resources have been downloaded
         // and the first visually complete rendering of the base style has occurred.
         // it's odd. when use style other than mapbox, the style.load event is not triggered.Add commentMore actions
