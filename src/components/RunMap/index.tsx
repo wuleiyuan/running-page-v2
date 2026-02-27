@@ -234,7 +234,7 @@ const RunMap = ({
     }
   }, [lights]);
 
-  const mapRefCallback = useCallback(
+    (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
         if (map && IS_CHINESE && MAP_TILE_VENDOR === 'mapbox') {
