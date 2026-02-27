@@ -86,10 +86,6 @@ const RunMap = ({
     [currentMapTheme]
   );
 
-  // Use MapTiler token for Mapbox GL JS (compatible)
-  const mapboxAccessToken = useMemo(() => {
-    return MAP_TILE_ACCESS_TOKEN;
-  }, []);
 
   // Update map when theme changes
   useEffect(() => {
@@ -417,7 +413,6 @@ const RunMap = ({
       mapStyle={mapStyle}
       ref={mapRefCallback}
       cooperativeGestures={isTouchDevice()}
-      mapboxAccessToken={mapboxAccessToken}
     >
       {mapError && (
         <div className={styles.mapErrorNotification}>
