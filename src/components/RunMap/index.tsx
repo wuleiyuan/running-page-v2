@@ -234,6 +234,7 @@ const RunMap = ({
     }
   }, [lights]);
 
+  const mapRefCallback = useCallback(
     (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
