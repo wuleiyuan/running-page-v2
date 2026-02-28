@@ -1,0 +1,20 @@
+# 开发日志 (Development Log)
+
+## [2026-02-28] v2.1.0 重大重构：去除 Mapbox 依赖，全面拥抱 MapLibre
+### 核心问题
+- 原有框架高度依赖 Mapbox，导致在 Vercel 部署时频繁遭遇 CORS 跨域错误和 Token 验证失败拦截。
+- `react-map-gl` 哪怕是在使用其他免 Token 的瓦片源时，其底层仍然强制需要 Mapbox Token。
+
+### 解决路径
+1. **替换底层库**：在 `package.json` 中移除了原生的 `mapbox-gl`，替换为开源免费分支 `maplibre-gl` (v3.6.2)。
+2. **适配 React 组件**：将引入组件（如 Map, Layer, Marker 等）的路径统一从 `react-map-gl` 改为兼容易用的 `react-map-gl/maplibre`。
+3. **剔除残留项**：
+   - 彻底移除了 `MapboxLanguage` 等专属控件的引用。
+   - 删除了 `<Map>` 组件中绑定的 `mapboxAccessToken` 属性以杜绝后台追踪（Telemetry）请求发往 events.mapbox.com。
+4. **更换地图源**：配置 `MAP_TILE_VENDOR = 'mapcn'` 以及设置 `MAP_TILE_ACCESS_TOKEN = ''`，使用免 Key 的免费地图底图（如 `osm-bright`）。
+
+### 部署修复
+- 修复了因为直接手动修改 `package.json` 但未同步更新 `pnpm-lock.yaml` 导致 Vercel 触发 `ERR_PNPM_OUTDATED_LOCKFILE` 的致命构建失败。
+
+### 总结
+当前项目已经**100%剥离了 Mapbox 的商业限制**，成为一个可以零配置、免 API Key、一键部署上线的纯开源数据可视化大屏展示方案。
