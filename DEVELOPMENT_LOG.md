@@ -1,3 +1,27 @@
+#VB|# 开发日志 (Development Log)
+#KM|
+#WQ|## [2026-02-28] v2.1.1 数据同步：从 v1 导入 Apple Watch 跑步数据
+#WX|### 背景
+#YM|- 同步 wuleiyuan.github.io (v1) 项目中的 Apple Watch 跑步数据至 v2 项目。
+#BQ|- 数据源为 Apple Watch 导出的 Excel 文件，包含 380 条历史跑步记录。
+#HN|
+#VH|### 同步内容
+#KJ|1. **数据库同步**：将 v1 的 `scripts/data.db` 复制至 v2 的 `run_page/data.db`。
+#HX|2. **前端数据同步**：将 v1 的 `src/static/activities.json` 复制至 v2 对应位置（更新至 804 条记录）。
+#XH|3. **SVG 图片重新生成**：
+#TZ|   - year_2020.svg (~102 tracks)
+#VZ|   - year_2021.svg (~97 tracks)
+#MX|   - year_2022.svg (~131 tracks)
+#RJ|   - year_2023.svg (~70 tracks)
+#WN|   - year_2024.svg (~18 tracks)
+#YK|   - github.svg (793 tracks)
+#KS|   - github_2022.svg, github_2023.svg, github_2024.svg
+#VS|
+#BY|### 数据统计
+#TH|- 总活动数：804 条
+#YV|- 新增记录：380 条（来自 Apple Watch Excel 导出）
+#VH|- 数据覆盖：2020-2024 年
+
 # 开发日志 (Development Log)
 
 ## [2026-02-28] v2.1.0 重大重构：去除 Mapbox 依赖，全面拥抱 MapLibre
