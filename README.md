@@ -1,11 +1,14 @@
 # Running Page (V2 - Vercel Edition)
 
+> **Version: 2.1.0**
+> **GitHub Repository**: [wuleiyuan/running-page-v2](https://github.com/wuleiyuan/running-page-v2)
+> **Live Demo**: [https://running-page-v2.vercel.app](https://running-page-v2.vercel.app)
+>
 > **Version Update (2026-02-28)**:
 > - **Engine Update**: Fully migrated from Mapbox to the completely open-source **MapLibre** engine.
 > - **Removed Restrictions**: Removed dependencies on `mapbox-gl` and its telemetry, completely resolving CORS and validation errors caused by missing Mapbox Tokens.
 > - **Map Source**: Default to the free MapCN tile service. No API token configuration is required for normal map rendering.
 > - This project serves as the next-generation refactored version, highly recommended to be deployed on Vercel.
-
 ---
 
 
