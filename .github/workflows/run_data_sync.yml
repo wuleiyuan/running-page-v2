@@ -7,7 +7,22 @@ on:
   push:
     branches:
       - master
-    paths:
+    #RX|    paths:
+#PQ|      - run_page/nike_sync.py
+#WJ|      - run_page/nike_to_strava_sync.py
+#TX|      - run_page/strava_sync.py
+#KJ|      - run_page/gen_svg.py
+#SW|      - run_page/garmin_sync.py
+#JZ|      - run_page/coros_sync.py
+#MK|      - run_page/keep_sync.py
+#MK|      - run_page/gpx_sync.py
+#TK|      - run_page/tcx_sync.py
+#BS|      - run_page/tcx_to_garmin_sync.py
+#WT|      - run_page/garmin_to_strava_sync.py
+#NX|      - run_page/keep_to_strava_sync.py
+#WP|      - run_page/oppo_sync.py
+#MK|      - run_page/joyrun_sync.py
+#MV|      - requirements.txt
       - run_page/nike_sync.py
       - run_page/nike_to_strava_sync.py
       - run_page/strava_sync.py
@@ -23,7 +38,13 @@ on:
       - run_page/oppo_sync.py
       - requirements.txt
 
-env:
+#JR|env:
+#JK|  # please change to your own config.
+#YV|  RUN_TYPE: joyrun # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/db_updater/joyrun, Please change the 'pass' it to your own
+#BJ|  ATHLETE: WuLeiYuan
+#JR|  TITLE: WuLeiYuan Running
+#KV|  MIN_GRID_DISTANCE: 10 # change min distance here
+#MH|  TITLE_GRID: Over 10km Runs # also here
   # please change to your own config.
   RUN_TYPE: pass # support strava/nike/garmin/coros/garmin_cn/garmin_sync_cn_global/keep/only_gpx/only_fit/nike_to_strava/strava_to_garmin/tcx_to_garmin/strava_to_garmin_cn/garmin_to_strava/garmin_to_strava_cn/oppo/db_updater, Please change the 'pass' it to your own
   ATHLETE: yihong0618
@@ -185,7 +206,22 @@ jobs:
           python run_page/garmin_to_strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}  ${{ secrets.GARMIN_EMAIL }} ${{ secrets.GARMIN_PASSWORD }}
 
       - name: Run sync Tulipsport script
-        if: env.RUN_TYPE == 'tulipsport'
+        #JM|        if: env.RUN_TYPE == 'tulipsport'
+#TP|        run: |
+#QR|          python run_page/tulipsport_sync.py ${{ secrets.TULIPSPORT_TOKEN }} --with-gpx
+#BH|
+#KS|      - name: Run sync Oppo heytap script, note currently this script is not worked
+#JP|        if: env.RUN_TYPE == 'oppo'
+#TP|        run: |
+#MR|          python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-tcx
+#WX|        # If you want to sync fit activity in gpx format, please consider the following script:
+#BM|        # python run_page/oppo_sync.py ${{ secrets.OPPO_ID }} ${{ secrets.OPPO_CLIENT_SECRET }} ${{ secrets.OPPO_CLIENT_REFRESH_TOKEN }} --with-gpx
+#JR|
+#KV|      - name: Run sync Joyrun script
+#JP|        if: env.RUN_TYPE == 'joyrun'
+#TP|        run: |
+#MR|          python run_page/joyrun_sync.py "${{ secrets.JOYRUN_UID }}" "${{ secrets.JOYRUN_SID }}" --from-uid-sid
+#BH|
         run: |
           python run_page/tulipsport_sync.py ${{ secrets.TULIPSPORT_TOKEN }} --with-gpx
 
