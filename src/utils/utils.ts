@@ -82,6 +82,16 @@ const convertMovingTime2Sec = (moving_time: string): number => {
   if (!moving_time) {
     return 0;
   }
+  // Handle "1970-01-01 HH:MM:SS.microseconds" format (from Apple Watch)
+  if (moving_time.startsWith('1970-01-01')) {
+    const match = moving_time.match(/1970-01-01 (\d+):(\d+):(\d+)/);
+    if (match) {
+      const hours = parseInt(match[1]);
+      const minutes = parseInt(match[2]);
+      const seconds = parseInt(match[3]);
+      return hours * 3600 + minutes * 60 + seconds;
+    }
+  }
   // moving_time : '2 days, 12:34:56' or '12:34:56';
   const splits = moving_time.split(', ');
   const days = splits.length == 2 ? parseInt(splits[0]) : 0;
