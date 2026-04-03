@@ -1,77 +1,5 @@
 [
   {
-    "id": "route_2026-04-03_7.30am",
-    "name": "Running 2026-04-02 22:38",
-    "start_date": "2026-04-02 22:38:40",
-    "distance": 7319,
-    "time": 3087,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-04-02_7.16pm",
-    "name": "Running 2025-04-02 10:41",
-    "start_date": "2025-04-02 10:41:05",
-    "distance": 5645,
-    "time": 2148,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-03-31_6.47pm",
-    "name": "Running 2025-03-31 10:41",
-    "start_date": "2025-03-31 10:41:29",
-    "distance": 531,
-    "time": 361,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-03-31_6.40pm",
-    "name": "Running 2025-03-31 10:13",
-    "start_date": "2025-03-31 10:13:32",
-    "distance": 4132,
-    "time": 1643,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-03-25_7.49pm",
-    "name": "Running 2025-03-25 11:04",
-    "start_date": "2025-03-25 11:04:11",
-    "distance": 5926,
-    "time": 2694,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-03-07_8.40pm",
-    "name": "Running 2025-03-07 11:49",
-    "start_date": "2025-03-07 11:49:30",
-    "distance": 5989,
-    "time": 3071,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-03-04_7.24pm",
-    "name": "Running 2025-03-04 10:59",
-    "start_date": "2025-03-04 10:59:05",
-    "distance": 3771,
-    "time": 1512,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-02-25_8.28pm",
-    "name": "Running 2025-02-25 11:25",
-    "start_date": "2025-02-25 11:25:55",
-    "distance": 8946,
-    "time": 3782,
-    "type": "Run"
-  },
-  {
-    "id": "route_2025-02-22_7.53pm",
-    "name": "Running 2025-02-22 11:04",
-    "start_date": "2025-02-22 11:04:54",
-    "distance": 5776,
-    "time": 2892,
-    "type": "Run"
-  },
-  {
     "run_id": 1735010547000,
     "name": "Run from Apple Watch",
     "distance": 3329.0,
@@ -84,30 +12,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.127156549520767,
     "streak": null
-  },
-  {
-    "id": "route_2024-11-25_8.07pm",
-    "name": "Running 2024-11-25 11:28",
-    "start_date": "2024-11-25 11:28:02",
-    "distance": 6040,
-    "time": 2369,
-    "type": "Run"
-  },
-  {
-    "id": "route_2024-11-19_8.48pm",
-    "name": "Running 2024-11-19 11:30",
-    "start_date": "2024-11-19 11:30:32",
-    "distance": 10456,
-    "time": 4676,
-    "type": "Run"
-  },
-  {
-    "id": "route_2024-10-27_9.40pm",
-    "name": "Running 2024-10-27 12:59",
-    "start_date": "2024-10-27 12:59:24",
-    "distance": 6767,
-    "time": 2492,
-    "type": "Run"
   },
   {
     "run_id": 1730005162000,
@@ -124,14 +28,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-10-23_9.29pm",
-    "name": "Running 2024-10-23 12:54",
-    "start_date": "2024-10-23 12:54:36",
-    "distance": 5777,
-    "time": 2075,
-    "type": "Run"
-  },
-  {
     "run_id": 1729659275000,
     "name": "Run from Apple Watch",
     "distance": 5222.0,
@@ -144,14 +40,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.515414258188825,
     "streak": null
-  },
-  {
-    "id": "route_2024-10-21_9.56pm",
-    "name": "Running 2024-10-21 13:09",
-    "start_date": "2024-10-21 13:09:24",
-    "distance": 7186,
-    "time": 2815,
-    "type": "Run"
   },
   {
     "run_id": 1729487363000,
@@ -168,14 +56,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-10-18_9.38pm",
-    "name": "Running 2024-10-18 13:14",
-    "start_date": "2024-10-18 13:14:09",
-    "distance": 3951,
-    "time": 1447,
-    "type": "Run"
-  },
-  {
     "run_id": 1729228437000,
     "name": "Run from Apple Watch",
     "distance": 3549.0,
@@ -188,14 +68,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.4408528198074277,
     "streak": null
-  },
-  {
-    "id": "route_2024-10-18_8.40pm",
-    "name": "Running 2024-10-18 12:28",
-    "start_date": "2024-10-18 12:28:50",
-    "distance": 1934,
-    "time": 692,
-    "type": "Run"
   },
   {
     "run_id": 1729225729000,
@@ -226,22 +98,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-10-11_9.21pm",
-    "name": "Running 2024-10-11 13:03",
-    "start_date": "2024-10-11 13:03:31",
-    "distance": 1569,
-    "time": 1058,
-    "type": "Run"
-  },
-  {
-    "id": "route_2024-10-11_8.47pm",
-    "name": "Running 2024-10-11 12:31",
-    "start_date": "2024-10-11 12:31:57",
-    "distance": 2990,
-    "time": 947,
-    "type": "Run"
-  },
-  {
     "run_id": 1728621115000,
     "name": "Run from Apple Watch",
     "distance": 2517.0,
@@ -254,14 +110,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.6550632911392404,
     "streak": null
-  },
-  {
-    "id": "route_2024-10-11_8.26pm",
-    "name": "Running 2024-10-11 11:17",
-    "start_date": "2024-10-11 11:17:09",
-    "distance": 8968,
-    "time": 4159,
-    "type": "Run"
   },
   {
     "run_id": 1728616628000,
@@ -292,14 +140,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-10-09_8.09pm",
-    "name": "Running 2024-10-09 11:22",
-    "start_date": "2024-10-09 11:22:36",
-    "distance": 8187,
-    "time": 2836,
-    "type": "Run"
-  },
-  {
     "run_id": 1726457683000,
     "name": "Run from Apple Watch",
     "distance": 5399.0,
@@ -328,14 +168,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-07-06_9.26pm",
-    "name": "Running 2024-07-06 12:45",
-    "start_date": "2024-07-06 12:45:31",
-    "distance": 8337,
-    "time": 2429,
-    "type": "Run"
-  },
-  {
     "run_id": 1720241130000,
     "name": "Run from Apple Watch",
     "distance": 6533.0,
@@ -348,14 +180,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.689584191025113,
     "streak": null
-  },
-  {
-    "id": "route_2024-07-04_10.02pm",
-    "name": "Running 2024-07-04 13:25",
-    "start_date": "2024-07-04 13:25:37",
-    "distance": 6826,
-    "time": 2195,
-    "type": "Run"
   },
   {
     "run_id": 1720070736000,
@@ -372,14 +196,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-07-01_9.12pm",
-    "name": "Running 2024-07-01 12:26",
-    "start_date": "2024-07-01 12:26:45",
-    "distance": 8950,
-    "time": 2720,
-    "type": "Run"
-  },
-  {
     "run_id": 1719808003000,
     "name": "Run from Apple Watch",
     "distance": 7011.0,
@@ -392,14 +208,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.594744633604737,
     "streak": null
-  },
-  {
-    "id": "route_2024-06-27_8.41pm",
-    "name": "Running 2024-06-27 11:54",
-    "start_date": "2024-06-27 11:54:27",
-    "distance": 9681,
-    "time": 2802,
-    "type": "Run"
   },
   {
     "run_id": 1719460466000,
@@ -430,14 +238,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-06-21_9.26pm",
-    "name": "Running 2024-06-21 12:47",
-    "start_date": "2024-06-21 12:47:03",
-    "distance": 7988,
-    "time": 2385,
-    "type": "Run"
-  },
-  {
     "run_id": 1718945222000,
     "name": "Run from Apple Watch",
     "distance": 6257.0,
@@ -466,14 +266,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-06-15_9.44pm",
-    "name": "Running 2024-06-15 12:37",
-    "start_date": "2024-06-15 12:37:24",
-    "distance": 12983,
-    "time": 4052,
-    "type": "Run"
-  },
-  {
     "run_id": 1718426243000,
     "name": "Run from Apple Watch",
     "distance": 10215.0,
@@ -488,14 +280,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-06-11_8.49pm",
-    "name": "Running 2024-06-11 11:47",
-    "start_date": "2024-06-11 11:47:29",
-    "distance": 13010,
-    "time": 3704,
-    "type": "Run"
-  },
-  {
     "run_id": 1718077648000,
     "name": "Run from Apple Watch",
     "distance": 10271.0,
@@ -508,14 +292,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.7721997300944667,
     "streak": null
-  },
-  {
-    "id": "route_2024-05-31_9.53pm",
-    "name": "Running 2024-05-31 12:48",
-    "start_date": "2024-05-31 12:48:45",
-    "distance": 13192,
-    "time": 3867,
-    "type": "Run"
   },
   {
     "run_id": 1717130924000,
@@ -546,14 +322,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-05-24_7.34am",
-    "name": "Running 2024-05-23 23:03",
-    "start_date": "2024-05-23 23:03:09",
-    "distance": 7086,
-    "time": 1853,
-    "type": "Run"
-  },
-  {
     "run_id": 1716438696000,
     "name": "Run from Apple Watch",
     "distance": 6347.0,
@@ -566,14 +334,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.6668067226890755,
     "streak": null
-  },
-  {
-    "id": "route_2024-05-19_8.13pm",
-    "name": "Running 2024-05-19 11:13",
-    "start_date": "2024-05-19 11:13:46",
-    "distance": 11236,
-    "time": 3608,
-    "type": "Run"
   },
   {
     "run_id": 1716088425000,
@@ -618,14 +378,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-04-18_8.03pm",
-    "name": "Running 2024-04-18 11:04",
-    "start_date": "2024-04-18 11:04:59",
-    "distance": 11455,
-    "time": 3485,
-    "type": "Run"
-  },
-  {
     "run_id": 1713409498000,
     "name": "Run from Apple Watch",
     "distance": 9311.0,
@@ -668,14 +420,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-04-06_9.02am",
-    "name": "Running 2024-04-05 23:09",
-    "start_date": "2024-04-05 23:09:42",
-    "distance": 21637,
-    "time": 6786,
-    "type": "Run"
-  },
-  {
     "run_id": 1712329781000,
     "name": "Run from Apple Watch",
     "distance": 20178.0,
@@ -688,14 +432,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.973474801061008,
     "streak": null
-  },
-  {
-    "id": "route_2024-04-03_9.14am",
-    "name": "Running 2024-04-03 00:09",
-    "start_date": "2024-04-03 00:09:27",
-    "distance": 11375,
-    "time": 3881,
-    "type": "Run"
   },
   {
     "run_id": 1712074166000,
@@ -726,14 +462,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-03-30_6.45pm",
-    "name": "Running 2024-03-30 09:57",
-    "start_date": "2024-03-30 09:57:40",
-    "distance": 8166,
-    "time": 2883,
-    "type": "Run"
-  },
-  {
     "run_id": 1711763859000,
     "name": "Run from Apple Watch",
     "distance": 7138.0,
@@ -746,14 +474,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.779595015576324,
     "streak": null
-  },
-  {
-    "id": "route_2024-03-29_5.54pm",
-    "name": "Running 2024-03-29 08:46",
-    "start_date": "2024-03-29 08:46:34",
-    "distance": 11067,
-    "time": 4075,
-    "type": "Run"
   },
   {
     "run_id": 1711673193000,
@@ -812,14 +532,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-03-22_6.36pm",
-    "name": "Running 2024-03-22 10:05",
-    "start_date": "2024-03-22 10:05:35",
-    "distance": 5401,
-    "time": 1874,
-    "type": "Run"
-  },
-  {
     "run_id": 1710901672000,
     "name": "Run from Apple Watch",
     "distance": 6340.0,
@@ -832,14 +544,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.650501672240803,
     "streak": null
-  },
-  {
-    "id": "route_2024-03-13_7.04pm",
-    "name": "Running 2024-03-13 10:02",
-    "start_date": "2024-03-13 10:02:08",
-    "distance": 11995,
-    "time": 3745,
-    "type": "Run"
   },
   {
     "run_id": 1710295327000,
@@ -870,14 +574,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-03-09_6.13pm",
-    "name": "Running 2024-03-09 09:12",
-    "start_date": "2024-03-09 09:12:32",
-    "distance": 11747,
-    "time": 3673,
-    "type": "Run"
-  },
-  {
     "run_id": 1709946751000,
     "name": "Run from Apple Watch",
     "distance": 10260.0,
@@ -892,14 +588,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-03-07_4.25pm",
-    "name": "Running 2024-03-07 06:54",
-    "start_date": "2024-03-07 06:54:08",
-    "distance": 17222,
-    "time": 5465,
-    "type": "Run"
-  },
-  {
     "run_id": 1709765647000,
     "name": "Run from Apple Watch",
     "distance": 15027.0,
@@ -912,14 +600,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.7491767288693745,
     "streak": null
-  },
-  {
-    "id": "route_2024-03-04_7.56pm",
-    "name": "Running 2024-03-04 10:53",
-    "start_date": "2024-03-04 10:53:53",
-    "distance": 11202,
-    "time": 3743,
-    "type": "Run"
   },
   {
     "run_id": 1709520832000,
@@ -948,14 +628,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.6995124361570966,
     "streak": null
-  },
-  {
-    "id": "route_2024-02-26_7.10pm",
-    "name": "Running 2024-02-26 10:32",
-    "start_date": "2024-02-26 10:32:38",
-    "distance": 6781,
-    "time": 2250,
-    "type": "Run"
   },
   {
     "run_id": 1708914757000,
@@ -1014,22 +686,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-02-24_8.07pm",
-    "name": "Running 2024-02-24 11:15",
-    "start_date": "2024-02-24 11:15:18",
-    "distance": 7145,
-    "time": 3117,
-    "type": "Run"
-  },
-  {
-    "id": "route_2024-02-22_7.47pm",
-    "name": "Running 2024-02-22 09:56",
-    "start_date": "2024-02-22 09:56:59",
-    "distance": 15880,
-    "time": 6633,
-    "type": "Run"
-  },
-  {
     "run_id": 1708567018000,
     "name": "Run from Apple Watch",
     "distance": 14168.0,
@@ -1056,14 +712,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.253266264022686,
     "streak": null
-  },
-  {
-    "id": "route_2024-02-19_8.22pm",
-    "name": "Running 2024-02-19 11:24",
-    "start_date": "2024-02-19 11:24:36",
-    "distance": 11248,
-    "time": 3494,
-    "type": "Run"
   },
   {
     "run_id": 1708313075000,
@@ -1094,14 +742,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-02-17_7.49pm",
-    "name": "Running 2024-02-17 10:48",
-    "start_date": "2024-02-17 10:48:33",
-    "distance": 11307,
-    "time": 3667,
-    "type": "Run"
-  },
-  {
     "run_id": 1708138112000,
     "name": "Run from Apple Watch",
     "distance": 10214.0,
@@ -1130,14 +770,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-02-15_7.45pm",
-    "name": "Running 2024-02-15 10:43",
-    "start_date": "2024-02-15 10:43:15",
-    "distance": 11386,
-    "time": 3764,
-    "type": "Run"
-  },
-  {
     "run_id": 1707964994000,
     "name": "Run from Apple Watch",
     "distance": 10311.0,
@@ -1164,14 +796,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.7154764226898513,
     "streak": null
-  },
-  {
-    "id": "route_2024-02-13_6.54pm",
-    "name": "Running 2024-02-13 10:09",
-    "start_date": "2024-02-13 10:09:14",
-    "distance": 7857,
-    "time": 2720,
-    "type": "Run"
   },
   {
     "run_id": 1707790153000,
@@ -1258,14 +882,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-01-31_8.13pm",
-    "name": "Running 2024-01-31 10:27",
-    "start_date": "2024-01-31 10:27:38",
-    "distance": 16557,
-    "time": 6354,
-    "type": "Run"
-  },
-  {
     "run_id": 1706668057000,
     "name": "Run from Apple Watch",
     "distance": 15311.0,
@@ -1292,14 +908,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.391190751009312,
     "streak": null
-  },
-  {
-    "id": "route_2024-01-27_7.56pm",
-    "name": "Running 2024-01-27 10:50",
-    "start_date": "2024-01-27 10:50:54",
-    "distance": 11248,
-    "time": 3932,
-    "type": "Run"
   },
   {
     "run_id": 1706323853000,
@@ -1330,14 +938,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-01-24_7.20pm",
-    "name": "Running 2024-01-24 10:40",
-    "start_date": "2024-01-24 10:40:07",
-    "distance": 6844,
-    "time": 2406,
-    "type": "Run"
-  },
-  {
     "run_id": 1706064006000,
     "name": "Run from Apple Watch",
     "distance": 6147.0,
@@ -1364,14 +964,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.552861537054141,
     "streak": null
-  },
-  {
-    "id": "route_2024-01-22_1.47pm",
-    "name": "Running 2024-01-22 03:43",
-    "start_date": "2024-01-22 03:43:29",
-    "distance": 24403,
-    "time": 7422,
-    "type": "Run"
   },
   {
     "run_id": 1705866208000,
@@ -1402,14 +994,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-01-19_7.25pm",
-    "name": "Running 2024-01-19 09:51",
-    "start_date": "2024-01-19 09:51:29",
-    "distance": 16411,
-    "time": 5623,
-    "type": "Run"
-  },
-  {
     "run_id": 1705629088000,
     "name": "Run from Apple Watch",
     "distance": 15030.0,
@@ -1436,14 +1020,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.663480285059079,
     "streak": null
-  },
-  {
-    "id": "route_2024-01-16_7.48pm",
-    "name": "Running 2024-01-16 10:33",
-    "start_date": "2024-01-16 10:33:50",
-    "distance": 13272,
-    "time": 4490,
-    "type": "Run"
   },
   {
     "run_id": 1705372428000,
@@ -1474,14 +1050,6 @@
     "streak": null
   },
   {
-    "id": "route_2024-01-14_8.12pm",
-    "name": "Running 2024-01-14 11:12",
-    "start_date": "2024-01-14 11:12:20",
-    "distance": 11120,
-    "time": 3617,
-    "type": "Run"
-  },
-  {
     "run_id": 1705201939000,
     "name": "Run from Apple Watch",
     "distance": 10042.0,
@@ -1508,14 +1076,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.773452481071701,
     "streak": null
-  },
-  {
-    "id": "route_2024-01-11_8.06pm",
-    "name": "Running 2024-01-11 11:02",
-    "start_date": "2024-01-11 11:02:13",
-    "distance": 12244,
-    "time": 3875,
-    "type": "Run"
   },
   {
     "run_id": 1704942132000,
@@ -1546,14 +1106,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-12-31_8.24pm",
-    "name": "Running 2023-12-31 11:20",
-    "start_date": "2023-12-31 11:20:10",
-    "distance": 11380,
-    "time": 3885,
-    "type": "Run"
-  },
-  {
     "run_id": 1703992809000,
     "name": "Run from Apple Watch",
     "distance": 10303.0,
@@ -1580,14 +1132,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.6452086495259914,
     "streak": null
-  },
-  {
-    "id": "route_2023-12-28_7.35pm",
-    "name": "Running 2023-12-28 10:35",
-    "start_date": "2023-12-28 10:35:28",
-    "distance": 11385,
-    "time": 3609,
-    "type": "Run"
   },
   {
     "run_id": 1703730927000,
@@ -1618,14 +1162,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-12-23_7.17pm",
-    "name": "Running 2023-12-23 09:55",
-    "start_date": "2023-12-23 09:55:53",
-    "distance": 13689,
-    "time": 4924,
-    "type": "Run"
-  },
-  {
     "run_id": 1703296552000,
     "name": "Run from Apple Watch",
     "distance": 12261.0,
@@ -1652,14 +1188,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.475115250910506,
     "streak": null
-  },
-  {
-    "id": "route_2023-12-17_6.20pm",
-    "name": "Running 2023-12-17 09:31",
-    "start_date": "2023-12-17 09:31:56",
-    "distance": 8496,
-    "time": 2907,
-    "type": "Run"
   },
   {
     "run_id": 1702776715000,
@@ -1690,14 +1218,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-12-12_6.06pm",
-    "name": "Running 2023-12-12 08:55",
-    "start_date": "2023-12-12 08:55:10",
-    "distance": 11577,
-    "time": 4296,
-    "type": "Run"
-  },
-  {
     "run_id": 1702342509000,
     "name": "Run from Apple Watch",
     "distance": 10085.0,
@@ -1726,14 +1246,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-12-10_7.43pm",
-    "name": "Running 2023-12-10 10:46",
-    "start_date": "2023-12-10 10:46:11",
-    "distance": 11789,
-    "time": 3426,
-    "type": "Run"
-  },
-  {
     "run_id": 1702176370000,
     "name": "Run from Apple Watch",
     "distance": 10271.0,
@@ -1760,14 +1272,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.991462901305648,
     "streak": null
-  },
-  {
-    "id": "route_2023-12-06_8.29pm",
-    "name": "Running 2023-12-06 11:27",
-    "start_date": "2023-12-06 11:27:17",
-    "distance": 11806,
-    "time": 3737,
-    "type": "Run"
   },
   {
     "run_id": 1701833235000,
@@ -1826,14 +1330,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-12-01_8.53pm",
-    "name": "Running 2023-12-01 07:06",
-    "start_date": "2023-12-01 07:06:57",
-    "distance": 11959,
-    "time": 20776,
-    "type": "Run"
-  },
-  {
     "run_id": 1701188298000,
     "name": "Run from Apple Watch",
     "distance": 11473.0,
@@ -1860,14 +1356,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.3005789870786613,
     "streak": null
-  },
-  {
-    "id": "route_2023-11-25_8.23pm",
-    "name": "Running 2023-11-25 11:38",
-    "start_date": "2023-11-25 11:38:50",
-    "distance": 2627,
-    "time": 2658,
-    "type": "Run"
   },
   {
     "run_id": 1700782855000,
@@ -1926,30 +1414,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-11-22_8.02pm",
-    "name": "Running 2023-11-22 11:36",
-    "start_date": "2023-11-22 11:36:46",
-    "distance": 96,
-    "time": 1560,
-    "type": "Run"
-  },
-  {
-    "id": "route_2023-11-22_3.27pm",
-    "name": "Running 2023-11-22 06:43",
-    "start_date": "2023-11-22 06:43:48",
-    "distance": 2761,
-    "time": 2626,
-    "type": "Run"
-  },
-  {
-    "id": "route_2023-11-20_7.55pm",
-    "name": "Running 2023-11-20 10:46",
-    "start_date": "2023-11-20 10:46:02",
-    "distance": 11912,
-    "time": 4163,
-    "type": "Run"
-  },
-  {
     "run_id": 1700448361000,
     "name": "Run from Apple Watch",
     "distance": 10347.0,
@@ -1976,14 +1440,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.4772208058093,
     "streak": null
-  },
-  {
-    "id": "route_2023-11-17_8.25pm",
-    "name": "Running 2023-11-17 11:22",
-    "start_date": "2023-11-17 11:22:09",
-    "distance": 11859,
-    "time": 3773,
-    "type": "Run"
   },
   {
     "run_id": 1700191328000,
@@ -2042,22 +1498,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-11-09_6.54pm",
-    "name": "Running 2023-11-09 10:25",
-    "start_date": "2023-11-09 10:25:54",
-    "distance": 2269,
-    "time": 1702,
-    "type": "Run"
-  },
-  {
-    "id": "route_2023-11-08_7.19pm",
-    "name": "Running 2023-11-08 10:12",
-    "start_date": "2023-11-08 10:12:07",
-    "distance": 4974,
-    "time": 4015,
-    "type": "Run"
-  },
-  {
     "run_id": 1699239760000,
     "name": "Run from Apple Watch",
     "distance": 5209.0,
@@ -2084,14 +1524,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.5477642688472555,
     "streak": null
-  },
-  {
-    "id": "route_2023-11-04_7.15pm",
-    "name": "Running 2023-11-04 11:00",
-    "start_date": "2023-11-04 11:00:50",
-    "distance": 1670,
-    "time": 890,
-    "type": "Run"
   },
   {
     "run_id": 1698982818000,
@@ -2122,14 +1554,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-11-02_7.03pm",
-    "name": "Running 2023-11-02 10:31",
-    "start_date": "2023-11-02 10:31:41",
-    "distance": 3402,
-    "time": 1896,
-    "type": "Run"
-  },
-  {
     "run_id": 1698892300000,
     "name": "Run from Apple Watch",
     "distance": 2818.0,
@@ -2156,14 +1580,6 @@
     "average_heartrate": NaN,
     "average_speed": 1.4532899094854452,
     "streak": null
-  },
-  {
-    "id": "route_2023-11-01_7.37pm",
-    "name": "Running 2023-11-01 10:34",
-    "start_date": "2023-11-01 10:34:19",
-    "distance": 11971,
-    "time": 3770,
-    "type": "Run"
   },
   {
     "run_id": 1698806058000,
@@ -2250,14 +1666,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-10-28_9.27pm",
-    "name": "Running 2023-10-28 13:11",
-    "start_date": "2023-10-28 13:11:01",
-    "distance": 1400,
-    "time": 973,
-    "type": "Run"
-  },
-  {
     "run_id": 1698375518000,
     "name": "Run from Apple Watch",
     "distance": 10485.0,
@@ -2286,14 +1694,6 @@
     "streak": null
   },
   {
-    "id": "route_2023-10-25_6.37pm",
-    "name": "Running 2023-10-25 09:34",
-    "start_date": "2023-10-25 09:34:17",
-    "distance": 12025,
-    "time": 3818,
-    "type": "Run"
-  },
-  {
     "run_id": 1698197656000,
     "name": "Run from Apple Watch",
     "distance": 10462.0,
@@ -2320,22 +1720,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.728813826377181,
     "streak": null
-  },
-  {
-    "id": "route_2023-10-25_4.03pm",
-    "name": "Running 2023-10-25 07:51",
-    "start_date": "2023-10-25 07:51:10",
-    "distance": 2290,
-    "time": 731,
-    "type": "Run"
-  },
-  {
-    "id": "route_2023-10-25_11.27am",
-    "name": "Running 2023-10-25 03:23",
-    "start_date": "2023-10-25 03:23:33",
-    "distance": 1321,
-    "time": 214,
-    "type": "Run"
   },
   {
     "run_id": 1697941982000,
@@ -3036,14 +2420,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.3244781783681217,
     "streak": null
-  },
-  {
-    "id": "257394415",
-    "name": "Running 2023-07-17 12:03",
-    "start_date": "2023-07-17 12:03:22",
-    "distance": 5489,
-    "time": 1990,
-    "type": "Run"
   },
   {
     "run_id": 1689592522000,
@@ -3954,14 +3330,6 @@
     "average_heartrate": NaN,
     "average_speed": 2.8119136960600377,
     "streak": null
-  },
-  {
-    "id": "217981871",
-    "name": "Running 2022-11-07 13:06",
-    "start_date": "2022-11-07 13:06:49",
-    "distance": 0,
-    "time": 1,
-    "type": "Run"
   },
   {
     "run_id": 1667826073000,
