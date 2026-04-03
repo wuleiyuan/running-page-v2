@@ -8,13 +8,13 @@ on:
     branches:
       - master
     paths:
-      - run_page/joyrun_sync.py
+      - run_page/keep_sync.py
       - src/static/activities.json
       - requirements.txt
       - .github/workflows/run_data_sync.yml
 
 env:
-  RUN_TYPE: joyrun
+  RUN_TYPE: keep
   ATHLETE: WuLeiYuan
   TITLE: WuLeiYuan Running
   MIN_GRID_DISTANCE: 10
@@ -75,10 +75,10 @@ jobs:
             ${{ env.DATA_CACHE_PREFIX }}-${{ github.sha }}-
             ${{ env.DATA_CACHE_PREFIX }}-
 
-      - name: Run sync Joyrun script
-        if: env.RUN_TYPE == 'joyrun'
+      - name: Run sync Keep script
+        if: env.RUN_TYPE == 'keep'
         run: |
-          python run_page/joyrun_sync.py "${{ secrets.JOYRUN_UID }}" "${{ secrets.JOYRUN_SID }}" --from-uid-sid
+          python run_page/keep_sync.py "${{ secrets.KEEP_PHONE_NUMBER }}" "${{ secrets.KEEP_PASSWORD }}"
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
@@ -112,7 +112,7 @@ jobs:
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
           git add .
-          git commit -m 'update new runs' || echo 'nothing to commit'
+          git commit -m 'chore: update running data from Keep' || echo 'nothing to commit'
           git push || echo 'nothing to push'
 
       - name: Set Output
