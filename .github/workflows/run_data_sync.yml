@@ -163,7 +163,12 @@ jobs:
           cd /home/runner/work/running-page-v2/running-page-v2
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
-          git add src/static/activities.json assets/*.svg
+          echo "=== Checking activities.json ==="
+          head -c 200 src/static/activities.json
+          echo ""
+          echo "=== Git add -v ==="
+          git add -v src/static/activities.json assets/*.svg
+          echo "=== Git status ==="
           git status
           git commit -m 'chore: update running data from Keep' || echo 'nothing to commit'
           git push || echo 'nothing to push'
