@@ -80,6 +80,20 @@ jobs:
         run: |
           python run_page/keep_sync.py "${{ secrets.KEEP_PHONE_NUMBER }}" "${{ secrets.KEEP_PASSWORD }}"
 
+      - name: Regenerate activities.json from database
+        if: env.RUN_TYPE == 'keep'
+        run: |
+          python -c "
+          import json
+          from run_page.generator import Generator
+          from run_page.config import SQL_FILE, JSON_FILE
+          generator = Generator(SQL_FILE)
+          activities_list = generator.load()
+          with open(JSON_FILE, 'w') as f:
+              json.dump(activities_list, f)
+          print(f'Generated {len(activities_list)} activities to JSON')
+          "
+
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
         env:
