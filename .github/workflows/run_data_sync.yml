@@ -155,9 +155,14 @@ jobs:
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
         run: |
+          cd /home/runner/work/running-page-v2/running-page-v2
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
+          echo "=== Git status before add ==="
+          git status
           git add .
+          echo "=== Git status after add ==="
+          git status
           git commit -m 'chore: update running data from Keep' || echo 'nothing to commit'
           git push || echo 'nothing to push'
 
