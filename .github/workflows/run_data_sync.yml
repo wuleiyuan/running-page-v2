@@ -80,10 +80,51 @@ jobs:
         run: |
           cd /home/runner/work/running-page-v2/running-page-v2
           python run_page/keep_sync.py "${{ secrets.KEEP_PHONE_NUMBER }}" "${{ secrets.KEEP_PASSWORD }}" 2>&1 || true
-          echo "=== Debug info ==="
-          echo "JSON file path: src/static/activities.json"
-          ls -la src/static/activities.json 2>&1 || echo "File does not exist"
-          wc -l src/static/activities.json 2>&1 || echo "Cannot count lines"
+
+      - name: Generate activities.json from database
+        if: env.RUN_TYPE == 'keep'
+        run: |
+          cd /home/runner/work/running-page-v2/running-page-v2
+          python3 -c "
+          import sqlite3
+          import json
+          from datetime import timedelta
+          
+          conn = sqlite3.connect('run_page/data.db')
+          cursor = conn.cursor()
+          
+          cursor.execute('''
+              SELECT run_id, name, distance, moving_time, type, subtype, 
+                     start_date, start_date_local, location_country, summary_polyline,
+                     average_heartrate, average_speed, elevation_gain
+              FROM activities 
+              WHERE distance > 0.1
+              ORDER BY start_date_local
+          ''')
+          
+          columns = ['run_id', 'name', 'distance', 'moving_time', 'type', 'subtype',
+                     'start_date', 'start_date_local', 'location_country', 'summary_polyline',
+                     'average_heartrate', 'average_speed', 'elevation_gain']
+          
+          activities = []
+          for row in cursor.fetchall():
+              activity = {}
+              for i, col in enumerate(columns):
+                  val = row[i]
+                  if isinstance(val, timedelta):
+                      val = str(val).split('.')[0]  # Remove microseconds
+                  elif isinstance(val, float):
+                      if val != val:  # NaN check
+                          val = None
+                  activity[col] = val
+              activities.append(activity)
+          
+          conn.close()
+          
+          with open('src/static/activities.json', 'w') as f:
+              json.dump(activities, f, ensure_ascii=False)
+          print(f'Generated {len(activities)} activities to JSON')
+          "
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
