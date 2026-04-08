@@ -121,10 +121,15 @@ jobs:
           
           conn.close()
           
-          with open('src/static/activities.json', 'w') as f:
+          json_path = 'src/static/activities.json'
+          with open(json_path, 'w') as f:
               json.dump(activities, f, ensure_ascii=False)
           print(f'Generated {len(activities)} activities to JSON')
+          import os
+          print(f'File size: {os.path.getsize(json_path)} bytes')
           "
+          echo "=== JSON file info ==="
+          ls -la src/static/activities.json
 
       - name: Make svg GitHub profile
         if: env.RUN_TYPE != 'pass'
@@ -158,10 +163,7 @@ jobs:
           cd /home/runner/work/running-page-v2/running-page-v2
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
-          echo "=== Git status before add ==="
-          git status
-          git add .
-          echo "=== Git status after add ==="
+          git add src/static/activities.json assets/*.svg
           git status
           git commit -m 'chore: update running data from Keep' || echo 'nothing to commit'
           git push || echo 'nothing to push'
