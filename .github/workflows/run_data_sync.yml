@@ -163,15 +163,17 @@ jobs:
           cd /home/runner/work/running-page-v2/running-page-v2
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
-          echo "=== Checking activities.json ==="
-          head -c 200 src/static/activities.json
-          echo ""
-          echo "=== Git add -v ==="
-          git add -v src/static/activities.json assets/*.svg
-          echo "=== Git status ==="
+          git fetch origin
+          echo "=== Git status before add ==="
           git status
-          git commit -m 'chore: update running data from Keep' || echo 'nothing to commit'
-          git push || echo 'nothing to push'
+          echo "=== Git add ==="
+          git add src/static/activities.json assets/*.svg
+          echo "=== Git diff --cached --stat ==="
+          git diff --cached --stat
+          echo "=== Git commit ==="
+          git commit -m 'chore: update running data from Keep'
+          echo "=== Git push with force ==="
+          git push origin master --force-with-lease || git push origin master --force
 
       - name: Set Output
         id: set_output
