@@ -500,6 +500,9 @@ def run_keep_sync(
     new_tracks = get_all_keep_tracks(
         email, password, old_tracks_ids, keep_sports_data_api, with_gpx, with_tcx
     )
+    # Filter out None values (tracks that failed to parse)
+    new_tracks = [t for t in new_tracks if t is not None]
+    print(f"Syncing {len(new_tracks)} valid tracks")
     generator.sync_from_app(new_tracks)
 
     activities_list = generator.load()
