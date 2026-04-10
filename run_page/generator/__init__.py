@@ -133,7 +133,7 @@ class Generator:
         if self.only_run:
             query = query.filter(Activity.type == "Run")
 
-        activities = query.order_by(Activity.start_date_local)
+        activities = query.order_by(Activity.start_date_local.desc())
         activity_list = []
 
         streak = 0
