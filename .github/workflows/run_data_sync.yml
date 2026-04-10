@@ -101,7 +101,7 @@ jobs:
                      average_heartrate, average_speed, elevation_gain
               FROM activities 
               WHERE distance > 0.1
-              ORDER BY start_date_local
+              ORDER BY start_date_local DESC
           ''')
           
           columns = ['run_id', 'name', 'distance', 'moving_time', 'type', 'subtype',
