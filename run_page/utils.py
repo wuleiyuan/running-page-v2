@@ -14,6 +14,8 @@ from stravalib.exc import RateLimitExceeded
 
 
 def adjust_time(time, tz_name):
+    if not tz_name:
+        tz_name = "Asia/Shanghai"
     tc_offset = datetime.now(pytz.timezone(tz_name)).utcoffset()
     return time + tc_offset
 
