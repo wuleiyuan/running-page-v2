@@ -129,7 +129,7 @@ class Generator:
 
     def load(self):
         # if sub_type is not in the db, just add an empty string to it
-        query = self.session.query(Activity).filter(Activity.distance > 0.1)
+        query = self.session.query(Activity).filter(Activity.distance > 2000)
         if self.only_run:
             query = query.filter(Activity.type == "Run")
 
