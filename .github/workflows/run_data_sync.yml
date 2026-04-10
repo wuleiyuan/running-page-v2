@@ -100,7 +100,7 @@ jobs:
                      start_date, start_date_local, location_country, summary_polyline,
                      average_heartrate, average_speed, elevation_gain
               FROM activities 
-              WHERE distance > 2000
+              WHERE distance > 2000 AND type = 'Run'
               ORDER BY start_date_local DESC
           ''')
           
