@@ -133,7 +133,7 @@ class Generator:
         if self.only_run:
             query = query.filter(Activity.type == "Run")
 
-        activities = query.order_by(Activity.start_date_local.desc())
+        activities = query.order_by(Activity.start_date_local.asc())
         activity_list = []
 
         streak = 0
@@ -158,7 +158,7 @@ class Generator:
                 activity.summary_polyline = filter_out(activity.summary_polyline)  # type: ignore
             activity_list.append(activity.to_dict())
 
-        return activity_list
+        return activity_list[::-1]
 
     def get_old_tracks_ids(self):
         try:
