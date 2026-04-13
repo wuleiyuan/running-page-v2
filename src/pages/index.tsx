@@ -397,7 +397,7 @@ const Index = () => {
         <h1 className="my-12 mt-6 text-5xl font-extrabold italic">
           <a href={siteUrl}>{siteTitle}</a>
         </h1>
-        {(viewState.zoom ?? 0) <= 3 && IS_CHINESE ? (
+        {IS_CHINESE ? (
           <LocationStat
             changeYear={changeYear}
             changeCity={changeCity}
