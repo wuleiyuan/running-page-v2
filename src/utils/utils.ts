@@ -172,33 +172,43 @@ const locationForRun = (
   let [city, province, country] = ['', '', ''];
   let coordinate = null;
   if (location) {
-    // Only for Chinese now
-    // should filter 臺灣
-    const cityMatch = extractCities(location);
-    const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
-
-    if (cityMatch) {
-      city = cities.find((value) => cityMatch.includes(value)) as string;
-
-      if (!city) {
-        city = '';
-      }
-    }
-    if (provinceMatch) {
-      [province] = provinceMatch;
-      // try to extract city coord from location_country info
+    if (location.includes('{') && location.includes('}')) {
+      const countryMatch = location.match(/'country':\s*'([^']+)'/);
+      if (countryMatch) country = countryMatch[1];
+      const provMatch = location.match(/'province':\s*'([^']+)'/);
+      if (provMatch) province = provMatch[1];
+      const cityMatchStr = location.match(/'city':\s*'([^']+)'/);
+      if (cityMatchStr) city = cityMatchStr[1];
       coordinate = extractCoordinate(location);
-    }
-    const l = location.split(',');
-    // or to handle keep location format
-    let countryMatch = l[l.length - 1].match(
-      /[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/
-    );
-    if (!countryMatch && l.length >= 3) {
-      countryMatch = l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
-    }
-    if (countryMatch) {
-      [country] = countryMatch;
+    } else {
+      // Only for Chinese now
+      // should filter 臺灣
+      const cityMatch = extractCities(location);
+      const provinceMatch = location.match(/[\u4e00-\u9fa5]{2,}(省|自治区)/);
+
+      if (cityMatch) {
+        city = cities.find((value) => cityMatch.includes(value)) as string;
+
+        if (!city) {
+          city = '';
+        }
+      }
+      if (provinceMatch) {
+        [province] = provinceMatch;
+        // try to extract city coord from location_country info
+        coordinate = extractCoordinate(location);
+      }
+      const l = location.split(',');
+      // or to handle keep location format
+      let countryMatch = l[l.length - 1].match(
+        /[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/
+      );
+      if (!countryMatch && l.length >= 3) {
+        countryMatch = l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+      }
+      if (countryMatch) {
+        [country] = countryMatch;
+      }
     }
   }
   if (MUNICIPALITY_CITIES_ARR.includes(city)) {
