@@ -198,16 +198,21 @@ const locationForRun = (
         // try to extract city coord from location_country info
         coordinate = extractCoordinate(location);
       }
-      const l = location.split(',');
-      // or to handle keep location format
-      let countryMatch = l[l.length - 1].match(
-        /[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/
-      );
-      if (!countryMatch && l.length >= 3) {
-        countryMatch = l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
-      }
-      if (countryMatch) {
-        [country] = countryMatch;
+      
+      if (province || city) {
+        country = '中国';
+      } else {
+        const l = location.split(',');
+        // or to handle keep location format
+        let countryMatch = l[l.length - 1].match(
+          /[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/
+        );
+        if (!countryMatch && l.length >= 3) {
+          countryMatch = l[2].match(/[\u4e00-\u9fa5].*[\u4e00-\u9fa5]/);
+        }
+        if (countryMatch) {
+          [country] = countryMatch;
+        }
       }
     }
   }
