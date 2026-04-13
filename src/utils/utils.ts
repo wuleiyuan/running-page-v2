@@ -212,6 +212,13 @@ const locationForRun = (
         }
         if (countryMatch) {
           [country] = countryMatch;
+          const MUNIS = ['北京', '上海', '天津', '重庆'];
+          if (MUNIS.some((m) => country.startsWith(m))) {
+            const m = MUNIS.find((m) => country.startsWith(m));
+            city = m + '市';
+            province = city;
+            country = '中国';
+          }
         }
       }
     }
