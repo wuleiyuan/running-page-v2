@@ -170,8 +170,11 @@ export {
   INVALID_ROUTE_DATA,
 };
 
-const nike = 'rgb(224,237,94)'; // if you want to change the main color, modify this value in src/styles/variables.scss
-const dark_vanilla = 'rgb(228,212,220)';
+// 中等改造：换成克制的暗色主题（冷色调 + 运动感）
+// 原值：const nike = 'rgb(224,237,94)'; （荧光黄）
+// 新值：冷蓝灰，呼应"运动总览"页
+const nike = '#94a3b8';
+const dark_vanilla = '#1f2937';
 
 // If your map has an offset please change this line
 // issues #92 and #198

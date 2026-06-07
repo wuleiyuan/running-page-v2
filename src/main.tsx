@@ -4,6 +4,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import Index from './pages';
 import NotFound from './pages/404';
+import SportsOverview from './pages/sports-overview';
+import SportDetail from './pages/sport-detail';
 import ReactGA from 'react-ga4';
 import {
   GOOGLE_ANALYTICS_TRACKING_ID,
@@ -26,6 +28,14 @@ const routes = createBrowserRouter(
     {
       path: 'summary',
       element: withOptionalGAPageTracking(<HomePage />),
+    },
+    {
+      path: 'sports',
+      element: withOptionalGAPageTracking(<SportsOverview />),
+    },
+    {
+      path: 'sports/:key',
+      element: withOptionalGAPageTracking(<SportDetail />),
     },
     {
       path: '*',
