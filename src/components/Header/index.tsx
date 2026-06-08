@@ -71,6 +71,13 @@ const Header = () => {
           </Link>
         </div>
         <div className="flex w-3/4 items-center justify-end text-right">
+          <Link
+            to="/sports"
+            className="mr-3 text-lg lg:mr-4 lg:text-base hover:opacity-80 transition-opacity"
+            style={{ textDecoration: 'none' }}
+          >
+            🏅 运动总览
+          </Link>
           {navLinks.map((n, i) => (
             <a
               key={i}

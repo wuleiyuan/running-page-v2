@@ -7,8 +7,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import SportCard from '@/components/SportCard';
-import { SPORT_TYPES } from '@/utils/sportTypes';
-import { normalizeSportType } from '@/utils/sportTypes';
+import { SPORT_TYPES, normalizeSportType } from '@/utils/sportTypes';
 import activities from '@/static/activities.json';
 import { Activity } from '@/utils/utils';
 
@@ -26,8 +25,9 @@ const SportsOverview = () => {
     });
 
     // 累加每条活动
+    // 兼容层：type + name 双字段归一化（兼容 Strava/Keep/Apple HealthKit/GPX/中文）
     activities.forEach((act: Activity) => {
-      const key = normalizeSportType(act.type);
+      const key = normalizeSportType(act.type, act.name);
       if (!stats[key]) {
         stats[key] = { count: 0, totalDistance: 0, totalTime: 0 };
       }

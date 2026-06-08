@@ -18,7 +18,7 @@ const SportDetail = () => {
   const sportActivities = useMemo(() => {
     if (!sport) return [];
     return activities
-      .filter((act: Activity) => normalizeSportType(act.type) === sport.key)
+      .filter((act: Activity) => normalizeSportType(act.type, act.name) === sport.key)
       .sort((a: Activity, b: Activity) => {
         const da = a.start_date_local || a.start_date || '';
         const db = b.start_date_local || b.start_date || '';
