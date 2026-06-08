@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import SportCard from '@/components/SportCard';
 import { SPORT_TYPES, normalizeSportType } from '@/utils/sportTypes';
+import { convertMovingTime2Sec } from '@/utils/utils';
 import activities from '@/static/activities.json';
 import { Activity } from '@/utils/utils';
 
@@ -33,8 +34,9 @@ const SportsOverview = () => {
       }
       stats[key].count += 1;
       stats[key].totalDistance += act.distance || 0;
-      // elapsed_time 优先，moving_time 兜底（秒）
-      const t = (act as any).elapsed_time || (act as any).moving_time || 0;
+      // moving_time 格式："1970-01-01 HH:MM:SS.microseconds" 或 "HH:MM:SS" 或 "2 days, HH:MM:SS"
+      // 用项目自带的 convertMovingTime2Sec 转换（utils.ts）
+      const t = convertMovingTime2Sec((act.moving_time as string) || '0');
       stats[key].totalTime += t;
       // 最近一次活动日期
       const date = act.start_date_local || act.start_date;
@@ -52,6 +54,15 @@ const SportsOverview = () => {
     const totalDist = Object.values(sportStats).reduce((s, v) => s + v.totalDistance, 0);
     const activeSports = SPORT_TYPES.filter((s) => sportStats[s.key]?.count > 0).length;
     return { totalCount, totalDist, activeSports };
+  }, [sportStats]);
+
+  // 排序后的桶：有数据在前（按 count 降序），空数据在后（按声明顺序）
+  const sortedSports = useMemo(() => {
+    const withData = SPORT_TYPES.filter((s) => (sportStats[s.key]?.count || 0) > 0);
+    const withoutData = SPORT_TYPES.filter((s) => (sportStats[s.key]?.count || 0) === 0);
+    // 有数据的按 count 降序
+    withData.sort((a, b) => (sportStats[b.key].count - sportStats[a.key].count));
+    return [...withData, ...withoutData];
   }, [sportStats]);
 
   return (
@@ -75,9 +86,9 @@ const SportsOverview = () => {
           </p>
         </header>
 
-        {/* 运动卡片网格 */}
+        {/* 运动卡片网格 - 已按 count 降序 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {SPORT_TYPES.map((sport) => {
+          {sortedSports.map((sport) => {
             const stat = sportStats[sport.key] || {
               count: 0,
               totalDistance: 0,

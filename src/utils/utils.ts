@@ -26,6 +26,7 @@ import {
   GeoJsonProperties,
 } from 'geojson';
 import { getMapThemeFromCurrentTheme } from '@/hooks/useTheme';
+import { getSportCompatConfig } from './sportCompat';
 
 export type Coordinate = [number, number];
 
@@ -273,29 +274,32 @@ const pathForRun = (run: Activity): Coordinate[] => {
 const colorForRun = (run: Activity): string => {
   const dynamicRunColor = getRuntimeRunColor();
 
-  switch (run.type) {
-    case 'Run': {
-      if (run.subtype === 'trail') {
-        return RUN_TRAIL_COLOR;
-      } else if (run.subtype === 'generic') {
-        return dynamicRunColor;
-      }
+  // 用 sportCompat 兼容层（5+ 数据源归一化）替代硬编码 switch
+  // Workouts / Yoga / StairStepper / Rowing 等不再被当跑步色
+  const sportKey = getSportCompatConfig(run.type, run.name).key;
+  switch (sportKey) {
+    case 'Run':
+      if (run.subtype === 'trail') return RUN_TRAIL_COLOR;
       return dynamicRunColor;
-    }
-    case 'cycling':
-    case 'Ride': // For Strava
-      return CYCLING_COLOR;
-    case 'hiking':
-    case 'Hike': // For Strava
-      return HIKING_COLOR;
-    case 'walking':
-    case 'Walk': // For Strava
-      return WALKING_COLOR;
-    case 'swimming':
-    case 'Swim': // For Strava
-      return SWIMMING_COLOR;
-    default:
-      return MAIN_COLOR;
+    case 'Ride': return CYCLING_COLOR;
+    case 'Hiking': return HIKING_COLOR;
+    case 'Walk': return WALKING_COLOR;
+    case 'Swim': return SWIMMING_COLOR;
+    case 'Yoga': return '#fb923c';       // 橙
+    case 'Strength': return '#f97316';   // 力量橙
+    case 'Core': return '#a78bfa';       // 紫
+    case 'StairStepper': return '#34d399'; // 绿
+    case 'Elliptical': return '#60a5fa'; // 蓝
+    case 'Rowing': return '#06b6d4';     // 青
+    case 'Boxing': return '#dc2626';     // 红
+    case 'Soccer': return '#10b981';     // 草绿
+    case 'Basketball': return '#f59e0b'; // 琥珀
+    case 'Tennis': return '#84cc16';     // 黄绿
+    case 'Skiing': return '#0ea5e9';     // 雪蓝
+    case 'Surfing': return '#0891b2';    // 海青
+    case 'Golf': return '#16a34a';       // 高尔夫绿
+    case 'Wheelchair': return '#a3a3a3'; // 灰
+    default: return MAIN_COLOR;          // 兜底 = 跑步色
   }
 };
 
