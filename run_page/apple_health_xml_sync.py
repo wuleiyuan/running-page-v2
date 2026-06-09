@@ -170,6 +170,7 @@ def main():
                         "name": f"{type_cn} {activity_type.replace('HKWorkoutActivityType', '')}",
                         "distance": 0.0,  # 第二遍填
                         "moving_time": f"1970-01-01 {start_dt.strftime('%H:%M:%S')}.000000",
+                        "elapsed_time": f"1970-01-01 {start_dt.strftime('%H:%M:%S')}.000000",  # SVG 需要（不能为 None）
                         "type": type_str,
                         "subtype": type_str,
                         "start_date": start_dt.astimezone(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
@@ -262,15 +263,15 @@ def main():
     cur = conn.cursor()
     insert_sql = """
     INSERT OR REPLACE INTO activities
-    (run_id, name, distance, moving_time, type, subtype, start_date,
+    (run_id, name, distance, moving_time, elapsed_time, type, subtype, start_date,
      start_date_local, location_country, summary_polyline,
      average_heartrate, average_speed, elevation_gain)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     inserted = 0
     for w in workouts:
         cur.execute(insert_sql, (
-            w["run_id"], w["name"], w["distance"], w["moving_time"],
+            w["run_id"], w["name"], w["distance"], w["moving_time"], w["elapsed_time"],
             w["type"], w["subtype"], w["start_date"], w["start_date_local"],
             w["location_country"], w["summary_polyline"],
             w["average_heartrate"], w["average_speed"], w["elevation_gain"],
