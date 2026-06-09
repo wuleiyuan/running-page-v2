@@ -5,7 +5,7 @@ import sys
 import arrow
 import stravalib
 from gpxtrackposter import track_loader
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from polyline_processor import filter_out
 
@@ -129,7 +129,14 @@ class Generator:
 
     def load(self):
         # if sub_type is not in the db, just add an empty string to it
-        query = self.session.query(Activity).filter(Activity.distance > 2000)
+        # 2026-06-09 用户反馈：之前限定 type=Run 是当时只跑步，现在多运动，不做 type 限制
+        # distance > 0.1m 过滤空记录（上游一致）；爬楼（StairStepper）没距离走 OR 例外
+        query = self.session.query(Activity).filter(
+            or_(
+                Activity.distance > 0.1,
+                Activity.type == 'StairStepper',  # 爬楼无距离
+            )
+        )
         if self.only_run:
             query = query.filter(Activity.type == "Run")
 
