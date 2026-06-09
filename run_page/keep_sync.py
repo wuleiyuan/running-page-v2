@@ -90,8 +90,16 @@ def get_to_download_runs_ids(session, headers, sport_type):
                         print(f"    - id: {stats.get('id')}, doubtful: {stats.get('isDoubtful')}, time: {st}")
 
             for i in run_logs:
-                logs = [j["stats"] for j in i["logs"]]
-                result.extend(k["id"] for k in logs if not k["isDoubtful"])
+                for j in i["logs"]:
+                    stats = j.get("stats")
+                    if stats is None:
+                        print(f"  Skipping log with no stats: date={i.get('date')}")
+                        continue
+                    if stats.get("isDoubtful"):
+                        continue
+                    run_id = stats.get("id")
+                    if run_id:
+                        result.append(run_id)
             last_date = r.json()["data"]["lastTimestamp"]
             since_time = datetime.fromtimestamp(last_date // 1000, tz=timezone.utc)
             print(f"pares keep ids data since {since_time}")
