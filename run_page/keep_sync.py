@@ -24,20 +24,23 @@ from generator import Generator
 from utils import adjust_time
 import xml.etree.ElementTree as ET
 
-KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
+# 同步的运动类型列表 - 按用户 2026-06-09 反馈：户外行走合并到 Hiking，爬楼独立
+KEEP_SPORT_TYPES = ["running", "hiking", "cycling", "outdoorWalking", "stairClimbing"]
 KEEP2STRAVA = {
-    "outdoorWalking": "Walk",
+    "outdoorWalking": "Hiking",   # 用户：户外行走 + 徒步 = 同一类（Hiking 桶）
     "outdoorRunning": "Run",
     "outdoorCycling": "Ride",
     "indoorRunning": "VirtualRun",
     "mountaineering": "Hiking",
+    "stairClimbing": "StairStepper",  # 爬楼 = StairStepper 桶（兼容层已建）
 }
 KEEP2TCX = {
-    "outdoorWalking": "Walking",
+    "outdoorWalking": "Hiking",    # 与 STRAVA 同步：户外行走归 Hiking
     "outdoorRunning": "Running",
     "outdoorCycling": "Biking",
     "indoorRunning": "Running",
     "mountaineering": "Hiking",
+    "stairClimbing": "StairClimbing",  # TCX 标准名
 }
 
 # need to test
