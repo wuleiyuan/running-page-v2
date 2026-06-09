@@ -135,6 +135,7 @@ class Generator:
             or_(
                 Activity.distance > 0.1,
                 Activity.type == 'StairStepper',  # 爬楼无距离
+                Activity.type == 'RopeSkipping',  # 跳绳无距离
             )
         )
         if self.only_run:

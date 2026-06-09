@@ -334,6 +334,26 @@ export const SPORT_COMPAT: SportCompat[] = [
     ],
     desc: '出拳的瞬间',
   },
+  {
+    key: 'RopeSkipping',
+    label: '跳绳',
+    emoji: '🪢',
+    color: '#f59e0b',
+    colorBg: 'rgba(245, 158, 11, 0.12)',
+    unit: 'min',
+    typeMatches: [
+      'RopeSkipping', 'ropeskipping',
+      'JumpRope', 'jumprope',
+      'SkippingRope', 'skippingrope',
+    ],
+    nameKeywords: [
+      /跳绳/,
+      /rope.?skipp?/i,
+      /jump.?rope/i,
+      /skipping/i,
+    ],
+    desc: '节奏感的燃脂',
+  },
   // === 球类 ===
   {
     key: 'Soccer',
