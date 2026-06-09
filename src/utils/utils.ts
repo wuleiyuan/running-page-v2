@@ -79,9 +79,13 @@ const formatPace = (d: number): string => {
   return `${minutes}'${seconds.toFixed(0).toString().padStart(2, '0')}"`;
 };
 
-const convertMovingTime2Sec = (moving_time: string): number => {
-  if (!moving_time) {
+const convertMovingTime2Sec = (moving_time: string | number): number => {
+  if (moving_time === null || moving_time === undefined || moving_time === '') {
     return 0;
+  }
+  // 数字直接当作秒数返回（兼容 V1 import / Garmin / 部分 Keep 记录）
+  if (typeof moving_time === 'number') {
+    return moving_time;
   }
   // Handle "1970-01-01 HH:MM:SS.microseconds" format (from Apple Watch)
   if (moving_time.startsWith('1970-01-01')) {
