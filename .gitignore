@@ -32,6 +32,7 @@ route.svg
 /run_page/data.db-journal
 /run_page/data.db-shm
 /run_page/data.db-wal
+/run_page/data.db.bak-*
 
 # Local notes
 PROJECT_NOTES.md
