@@ -165,12 +165,20 @@ def main():
                         if stat.attrib.get("type") == "HKQuantityTypeIdentifierActiveEnergyBurned":
                             energy_kcal = float(stat.attrib.get("sum", "0") or 0)
                             break
+                    # 把 duration (分钟) 转成 "HH:MM:SS" 格式填进 moving_time/elapsed_time
+                    # SVG drawer 需要 "1970-01-01 HH:MM:SS" 占位符格式才能解析
+                    # 修复前：曾误填 start_dt.strftime('%H:%M:%S')（开始时间）当成 duration，导致跑步显示成几小时
+                    duration_sec_total = int(duration_min * 60)
+                    dh = duration_sec_total // 3600
+                    dm = (duration_sec_total % 3600) // 60
+                    ds = duration_sec_total % 60
+                    duration_str = f"1970-01-01 {dh:02d}:{dm:02d}:{ds:02d}.000000"
                     workouts.append({
                         "run_id": run_id,
                         "name": f"{type_cn} {activity_type.replace('HKWorkoutActivityType', '')}",
                         "distance": 0.0,  # 第二遍填
-                        "moving_time": f"1970-01-01 {start_dt.strftime('%H:%M:%S')}.000000",
-                        "elapsed_time": f"1970-01-01 {start_dt.strftime('%H:%M:%S')}.000000",  # SVG 需要（不能为 None）
+                        "moving_time": duration_str,
+                        "elapsed_time": duration_str,
                         "type": type_str,
                         "subtype": type_str,
                         "start_date": start_dt.astimezone(dt.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
@@ -182,7 +190,7 @@ def main():
                         "elevation_gain": 0.0,
                         "_start_dt": start_dt,
                         "_end_dt": end_dt,
-                        "_duration_sec": int(duration_min * 60),
+                        "_duration_sec": duration_sec_total,
                         "_activity_type": activity_type,
                     })
             elem.clear()

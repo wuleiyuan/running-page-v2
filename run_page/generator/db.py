@@ -81,6 +81,26 @@ class Activity(Base):
         return out
 
 
+class Record(Base):
+    """Apple HealthKit Record 表（2026-06-10 新增）
+
+    存心率/步数/睡眠/HRV/血氧/呼吸率/静息心率等所有非 workout 数据。
+    原始 <Record type=...> 元素按时间序列入库，health_svg.py 聚合生成可视化。
+    """
+
+    __tablename__ = "records"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    record_type = Column(String)  # HKQuantityTypeIdentifierHeartRate → 'HeartRate'
+    start_date = Column(String)
+    end_date = Column(String)
+    value = Column(Float)  # 主数值
+    unit = Column(String)  # bpm / count / ms / km / % / etc.
+    source_name = Column(String)
+    category = Column(String)  # SleepAnalysis: 'InBed'/'AsleepCore'/'AsleepDeep'/'AsleepREM'/'Awake'
+    creation_date = Column(String)
+
+
 def update_or_create_activity(session, run_activity):
     created = False
     try:
@@ -193,6 +213,7 @@ def init_db(db_path):
 
     # check missing columns
     add_missing_columns(engine, Activity)
+    add_missing_columns(engine, Record)
 
     sm = sessionmaker(bind=engine)
     session = sm()

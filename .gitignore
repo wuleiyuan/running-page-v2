@@ -26,3 +26,14 @@ route.png
 route.svg
 
 .env
+
+# Local dev artifacts (data.db + health svg/data regenerated locally, not in repo)
+/run_page/data.db
+/data.db-journal
+/data.db-shm
+/data.db-wal
+/assets/health.svg
+/src/static/health_stats.json
+
+# Local notes
+PROJECT_NOTES.md
