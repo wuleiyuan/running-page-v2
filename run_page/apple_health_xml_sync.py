@@ -150,8 +150,11 @@ def main():
                 if start_dt and end_dt:
                     type_str, type_cn = XML_TYPE_MAP[activity_type]
                     source_name = attrs.get("sourceName", "")
-                    # 同一秒可能多设备，加 sourceName 哈希
-                    run_id = int(start_dt.timestamp() * 1000) + abs(hash(source_name)) % 10000
+                    # 同一秒可能多设备，加 sourceName 稳定哈希（hashlib 而非 Python hash()，
+                    # 否则 PYTHONHASHSEED 随机会导致 run_id 不稳定，重跑 sync 时 INSERT OR REPLACE 失效）
+                    import hashlib
+                    stable_hash = int(hashlib.md5(source_name.encode("utf-8")).hexdigest()[:4], 16) % 10000
+                    run_id = int(start_dt.timestamp() * 1000) + stable_hash
                     duration_min = duration_to_minutes(attrs.get("duration", "0"))
                     # 平均心率
                     avg_hr = None

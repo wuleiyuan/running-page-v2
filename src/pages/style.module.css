@@ -1,0 +1,142 @@
+.healthPage {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+  color: var(--color-primary);
+}
+
+.subtitle {
+  color: var(--color-run-table-thead, #666);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.statCard {
+  background: var(--color-run-row-hover-background, #f5f5f5);
+  border-radius: 12px;
+  padding: 20px 18px;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.statTitle {
+  font-size: 0.85rem;
+  color: var(--color-run-table-thead, #555);
+  margin-bottom: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.statMain {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-primary, #1a1a1a);
+  margin-bottom: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.statSub {
+  font-size: 0.75rem;
+  color: var(--color-run-table-thead, #666);
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+.statFootnote {
+  font-size: 0.7rem;
+  color: var(--color-run-table-thead, #888);
+  opacity: 0.7;
+}
+
+.yearSection {
+  margin-bottom: 48px;
+}
+
+.yearSection h2 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+}
+
+.yearTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.yearTable thead {
+  background: var(--color-run-row-hover-background, #f5f5f5);
+}
+
+.yearTable th,
+.yearTable td {
+  padding: 10px 12px;
+  text-align: right;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.yearTable th:first-child,
+.yearTable td:first-child {
+  text-align: left;
+}
+
+.yearTable tbody tr:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.toggleSection {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.toggleBtn {
+  background: var(--color-primary, #1a1a1a);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.toggleBtn:hover {
+  opacity: 0.85;
+}
+
+.svgSection {
+  margin-bottom: 32px;
+}
+
+.svgSection h2 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+}
+
+.svgEmbed {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 1200px;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
