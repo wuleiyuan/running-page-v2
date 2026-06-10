@@ -2,6 +2,11 @@ name: CI
 
 on: [push, pull_request]
 
+env:
+  # 2026-06-10: GitHub 将于 2026-06-16 默认切到 Node24，2026-09-16 移除 Node20 runner。
+  # 提前开启此环境变量，让 runner 把 JS action 强制跑在 Node24 上，避免 deprecation。
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   node_build:
     runs-on: ubuntu-latest

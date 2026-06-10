@@ -14,6 +14,10 @@ on:
       - .github/workflows/run_data_sync.yml
 
 env:
+  # 2026-06-10: GitHub 将于 2026-06-16 默认切到 Node24，2026-09-16 移除 Node20 runner。
+  # 当前 actions/checkout@v4 / actions/setup-python@v5 / actions/cache@v4 仍跑在 Node20，
+  # 提前开启此环境变量，让 runner 把这些 JS action 强制跑在 Node24 上，避免 deprecation。
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
   RUN_TYPE: keep
   ATHLETE: WuLeiYuan
   TITLE: WuLeiYuan Running
@@ -116,21 +120,33 @@ jobs:
 
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
+        env:
+          # 2026-06-10: 确保 git push 用的是 GITHUB_TOKEN 而非残留凭据
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e
           cd /home/runner/work/running-page-v2/running-page-v2
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git fetch origin
           echo "=== Git status before add ==="
           git status
           echo "=== Git add ==="
           git add src/static/activities.json assets/*.svg
           echo "=== Git diff --cached --stat ==="
-          git diff --cached --stat
+          git diff --cached --stat || true
+          if git diff --cached --quiet; then
+            echo "=== No changes to commit, skip push ==="
+            exit 0
+          fi
           echo "=== Git commit ==="
           git commit -m 'chore: update running data from Keep'
-          echo "=== Git push with force ==="
-          git push origin master --force-with-lease || git push origin master --force
+          echo "=== Git push with force-with-lease ==="
+          git push origin master --force-with-lease || {
+            echo "=== force-with-lease failed, retrying with force ==="
+            git push origin master --force
+          }
 
       - name: Set Output
         id: set_output

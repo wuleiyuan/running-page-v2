@@ -28,6 +28,11 @@ concurrency:
   group: 'pages'
   cancel-in-progress: true
 
+env:
+  # 2026-06-10: GitHub 将于 2026-06-16 默认切到 Node24，2026-09-16 移除 Node20 runner。
+  # 提前开启此环境变量，让 runner 把 JS action 强制跑在 Node24 上，避免 deprecation。
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
