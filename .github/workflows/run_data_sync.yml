@@ -15,7 +15,6 @@ on:
 
 env:
   RUN_TYPE: keep
-  RUN_TYPE_HEALTH: 'false'  # 手工触发 health stats/svg：gh workflow run ... -f run_type_health=true
   ATHLETE: WuLeiYuan
   TITLE: WuLeiYuan Running
   MIN_GRID_DISTANCE: 10
@@ -115,24 +114,6 @@ jobs:
         run: |
           python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "${{ env.ATHLETE }}"
 
-      # 2026-06-10: Apple Health records + health stats + health svg
-      # 注意：Apple Health xml (1.1GB) 没法 push 到 repo，records 表只在本地手工同步
-      # CI 上 db 没有 records 表，所以 health stats/svg 生成 step 用 if: env.RUN_TYPE_HEALTH=='true' 守门
-      # 本地手工触发：gh workflow run run_data_sync.yml -f run_type_health=true
-      - name: Make health stats (本地手工触发)
-        if: env.RUN_TYPE_HEALTH == 'true'
-        env:
-          APPLE_HEALTH_XML_PATH: ${{ secrets.APPLE_HEALTH_XML_PATH }}
-        run: |
-          # Step 1: 同步 records 入 db（如果 xml 路径 secret 配了）
-          if [ -n "$APPLE_HEALTH_XML_PATH" ] && [ -f "$APPLE_HEALTH_XML_PATH" ]; then
-            python run_page/apple_health_records_sync.py --xml "$APPLE_HEALTH_XML_PATH"
-          fi
-          # Step 2: 生成 daily stats json
-          python run_page/health_stats.py
-          # Step 3: 生成 health dashboard svg
-          python run_page/health_svg.py
-
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
         run: |
@@ -143,7 +124,7 @@ jobs:
           echo "=== Git status before add ==="
           git status
           echo "=== Git add ==="
-          git add src/static/activities.json assets/*.svg src/static/health_stats.json
+          git add src/static/activities.json assets/*.svg
           echo "=== Git diff --cached --stat ==="
           git diff --cached --stat
           echo "=== Git commit ==="
