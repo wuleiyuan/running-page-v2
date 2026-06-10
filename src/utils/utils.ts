@@ -369,6 +369,10 @@ const getActivitySport = (act: Activity): string => {
 };
 
 const titleForRun = (run: Activity): string => {
+  // Non-Run activities: don't pretend they're runs. Return Chinese name from db or fallback to type.
+  if (run.type && run.type !== 'Run') {
+    return run.name && run.name != '' ? run.name : run.type;
+  }
   if (RICH_TITLE) {
     // 1. try to use user defined name
     if (run.name != '') {
@@ -381,7 +385,7 @@ const titleForRun = (run: Activity): string => {
       return `${city} ${activity_sport}`;
     }
   }
-  // 3. use time+length if location or type is not available
+  // 3. use time+length if location or type is not available (Run only, see guard above)
   const runDistance = run.distance / 1000;
   const runHour = +run.start_date_local.slice(11, 13);
   if (runDistance > 20 && runDistance < 40) {

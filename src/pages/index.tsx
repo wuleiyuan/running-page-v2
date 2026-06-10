@@ -84,9 +84,11 @@ const Index = () => {
   }, []);
 
   // Memoize expensive calculations
+  // 主页只显示跑步活动（Run 类型），爬楼/跳绳/骑行等去 /sports/<type> 看
   const runs = useMemo(() => {
+    const onlyRuns = (activities as unknown as Activity[]).filter((a) => a.type === 'Run');
     return filterAndSortRuns(
-      activities,
+      onlyRuns,
       currentFilter.item,
       currentFilter.func,
       sortDateFunc
