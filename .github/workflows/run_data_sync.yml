@@ -84,7 +84,7 @@ jobs:
       - name: Run sync Keep script
         if: env.RUN_TYPE == 'keep'
         run: |
-          cd /home/runner/work/running-page-v2/running-page-v2
+          cd /home/runner/work/sports-fair/sports-fair
           python run_page/keep_sync.py "${{ secrets.KEEP_PHONE_NUMBER }}" "${{ secrets.KEEP_PASSWORD }}" 2>&1 || true
 
       # 2026-06-09: 删除 "Generate activities.json from database" 步骤
@@ -125,7 +125,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          cd /home/runner/work/running-page-v2/running-page-v2
+          cd /home/runner/work/sports-fair/sports-fair
           git config --local user.email 'action@github.com'
           git config --local user.name 'GitHub Action'
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
