@@ -9,9 +9,10 @@ run_page/
 scripts/
 
 # ---- 同步数据产物 ----
-# activities.json 在 src/static/ 里同步放了一份
-# 根目录的仅供本地调试
-activities.json
+# activities.json 在 src/static/ 里同步放了一份, 重要: vite 编译时直接 import 它, 不能 ignore
+# 根目录的仅供本地调试, 只 ignore 根目录这一份
+/activities.json
+!src/static/activities.json
 
 # ---- Python 缓存与依赖（前端用不到）----
 **/__pycache__/
