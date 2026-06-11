@@ -1,8 +1,10 @@
-# Running Page (V2 - Vercel Edition)
+# Sports Fair - 运动集市
 
 > **Version: 2.1.0**
-> **GitHub Repository**: https://sports-fair.vercel.app/
-> **Live Demo**: https://sports-fair.vercel.app/
+> **GitHub Repository**: [wuleiyuan/sports-fair](https://github.com/wuleiyuan/sports-fair)
+> **Live Demo**: [https://sports-fair.vercel.app](https://sports-fair.vercel.app)
+>
+> Forked from [yihong0618/running_page](https://github.com/yihong0618/running_page).
 >
 > **Version Update (2026-02-28)**:
 > - **Engine Update**: Fully migrated from Mapbox to the completely open-source **MapLibre** engine.

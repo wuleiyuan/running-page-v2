@@ -1,14 +1,16 @@
-# Running Page (V2 - Vercel Edition)
+# Sports Fair - 运动集市
 
 > **版本: 2.1.0**
-> **GitHub 仓库**: [wuleiyuan/running-page-v2](https://github.com/wuleiyuan/running-page-v2)
-> **在线演示**: [https://running-page-v2.vercel.app](https://running-page-v2.vercel.app)
+> **GitHub 仓库**: [wuleiyuan/sports-fair](https://github.com/wuleiyuan/sports-fair)
+> **在线演示**: [https://sports-fair.vercel.app](https://sports-fair.vercel.app)
+>
+> 基于 [yihong0618/running_page](https://github.com/yihong0618/running_page) 开源项目二次开发。
 >
 > **版本更新记录 (2026-02-28)**:
 > - **底层引擎更新**: 从 Mapbox 引擎全面迁移到完全开源无限制的 **MapLibre** 引擎。
 > - **解除限制**: 移除了对 mapbox-gl 和相关 telemetry 的依赖，彻底解决了没有 Mapbox Token 导致的跨域和验证报错问题。
 > - **地图源**: 默认使用免费的 MapCN 瓦片地图服务，无需配置任何 API Token 即可正常渲染。
-> - 本项目作为新一代重构版本，推荐部署在 Vercel。
+> - 访问地址：不再分 V1（GitHub Pages）与 V2（Vercel），**统一部署在 Vercel**。
 ---
 
 
