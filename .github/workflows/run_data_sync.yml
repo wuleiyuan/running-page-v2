@@ -162,16 +162,22 @@ jobs:
           git config --local user.name 'GitHub Action'
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git fetch origin
+
           echo "=== Git status before add ==="
           git status
-          echo "=== Git add ==="
+          echo "=== Git add (data files only) ==="
           git add src/static/activities.json assets/*.svg
           echo "=== Git diff --cached --stat ==="
           git diff --cached --stat || true
           if git diff --cached --quiet; then
-            echo "=== No changes to commit, skip push ==="
+            echo "=== No data changes, skip push ==="
             exit 0
           fi
+
+          # ---- 仍 commit 到 master（前端构建需要 src/static/activities.json）----
+          # 但 Vercel 的 vercel-build 脚本（package.json + scripts/vercel-ignore-build.sh）
+          # 会先判断 src/ 是否真变了，没变就 exit 1 → Vercel 跳过构建
+          # 这样"数据 commit"不消耗 Vercel 构建次数
           echo "=== Git commit ==="
           git commit -m 'chore: sync sports data'
           echo "=== Git push with force-with-lease ==="

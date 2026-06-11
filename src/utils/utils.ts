@@ -292,7 +292,7 @@ const colorForRun = (run: Activity): string => {
     case 'Yoga': return '#fb923c';       // 橙
     case 'Strength': return '#f97316';   // 力量橙
     case 'Core': return '#a78bfa';       // 紫
-    case 'StairStepper': return '#34d399'; // 绿
+    case 'StairStepper': return '#30d158'; // System Green
     case 'Elliptical': return '#60a5fa'; // 蓝
     case 'Rowing': return '#06b6d4';     // 青
     case 'Boxing': return '#dc2626';     // 红

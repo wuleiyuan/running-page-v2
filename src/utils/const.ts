@@ -170,26 +170,26 @@ export {
   INVALID_ROUTE_DATA,
 };
 
-// 中等改造：换成克制的暗色主题（冷色调 + 运动感）
-// 原值：const nike = 'rgb(224,237,94)'; （荧光黄）
-// 新值：冷蓝灰，呼应"运动总览"页
-const nike = '#94a3b8';
-const dark_vanilla = '#1f2937';
+// Apple HIG 主题色（对齐 iOS 26 运动 / Activity 配色）
+// 暗色：System Green #34C759（高饱和荧光绿，Activity 经典色）
+// 浅色：System Blue #007AFF（聚焦色）
+const nike = '#34c759';
+const dark_vanilla = '#1c1c1e';
 
 // If your map has an offset please change this line
 // issues #92 and #198
 export const NEED_FIX_MAP = false;
 export const MAIN_COLOR = nike;
-export const PROVINCE_FILL_COLOR = '#47b8e0';
+export const PROVINCE_FILL_COLOR = '#34c759';
 export const COUNTRY_FILL_COLOR = dark_vanilla;
 
 // Static color constants
-export const RUN_COLOR_LIGHT = '#47b8e0';
+export const RUN_COLOR_LIGHT = '#007aff';
 export const RUN_COLOR_DARK = MAIN_COLOR;
 
 // Single run animation colors
-export const SINGLE_RUN_COLOR_LIGHT = '#52c41a'; // Green for light theme
-export const SINGLE_RUN_COLOR_DARK = '#ff4d4f'; // Red for dark theme
+export const SINGLE_RUN_COLOR_LIGHT = '#34c759'; // System Green (light)
+export const SINGLE_RUN_COLOR_DARK = '#30d158'; // System Green (dark)
 
 // Helper function to get theme-aware RUN_COLOR
 export const getRuntimeRunColor = (): string => {

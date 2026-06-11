@@ -1,8 +1,10 @@
 // 运动卡片 - 中等改造第四阶段
 // 加 hover 动画、未解锁灰态、距离按单位偏好显示
+// + IntersectionObserver 进入视口渐入动画（懒加载提升体感）
 
 import { Link } from 'react-router-dom';
 import type { SportCompat } from '@/utils/sportCompat';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 interface SportCardProps {
   sport: SportCompat;
@@ -46,9 +48,16 @@ export default function SportCard({
   const locked = count === 0;
   const dist = formatDistance(totalDistance, sport.unit);
   const unit = formatUnit(sport.unit);
+  // 懒加载：进入视口 100px 前触发；触发一次后保持可见
+  const [ref, isVisible] = useIntersectionObserver<HTMLAnchorElement>({
+    rootMargin: '100px',
+    threshold: 0.05,
+    once: true,
+  });
 
   return (
     <Link
+      ref={ref}
       to={locked ? '#' : href}
       onClick={(e) => {
         if (locked) e.preventDefault();
@@ -57,13 +66,17 @@ export default function SportCard({
         locked
           ? 'opacity-50 cursor-not-allowed grayscale'
           : 'hover:-translate-y-1 hover:shadow-2xl cursor-pointer'
-      }`}
+      } ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}
       style={{
         backgroundColor: locked ? 'rgba(40, 40, 40, 0.4)' : sport.colorBg,
         border: locked
           ? '1px dashed rgba(148, 163, 184, 0.25)'
           : `1px solid ${sport.color}33`,
         textDecoration: 'none',
+        // 渐入动画时长 400ms
+        transitionProperty: 'opacity, transform, background-color, box-shadow',
+        transitionDuration: '400ms',
+        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
       }}
       onMouseEnter={(e) => {
         if (locked) return;
@@ -126,7 +139,7 @@ export default function SportCard({
       {/* 底部：描述 或 鼓励语 */}
       <p
         className="text-xs leading-relaxed"
-        style={{ color: locked ? '#475569' : '#94a3b8' }}
+        style={{ color: locked ? '#636366' : '#98989d' }}
       >
         {locked ? `解锁 ${sport.label}，开启你的「${sport.desc.split('，')[0]}」` : sport.desc}
       </p>

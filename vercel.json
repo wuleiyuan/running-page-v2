@@ -4,5 +4,11 @@
       "gh-pages": false
     }
   },
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "buildCommand": "npm run vercel-build",
+  "installCommand": "npm install",
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "github": {
+    "silent": false,
+    "autoAlias": true
+  }
 }

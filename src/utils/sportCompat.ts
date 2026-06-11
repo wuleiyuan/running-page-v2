@@ -111,8 +111,8 @@ export const SPORT_COMPAT: SportCompat[] = [
     key: 'Walk',
     label: '步行',
     emoji: '🚶',
-    color: '#94a3b8',
-    colorBg: 'rgba(148, 163, 184, 0.12)',
+    color: '#98989d',
+    colorBg: 'rgba(152, 152, 157, 0.12)',
     unit: 'km',
     typeMatches: [
       'Walk', 'walk', 'Walking', 'walking',
@@ -165,8 +165,8 @@ export const SPORT_COMPAT: SportCompat[] = [
     key: 'Swim',
     label: '游泳',
     emoji: '🏊',
-    color: '#22d3ee',
-    colorBg: 'rgba(34, 211, 238, 0.12)',
+    color: '#5ac8fa',
+    colorBg: 'rgba(90, 200, 250, 0.12)',
     unit: 'm', // 游泳用米
     typeMatches: [
       'Swim', 'swim', 'Swimming', 'swimming',
@@ -269,8 +269,8 @@ export const SPORT_COMPAT: SportCompat[] = [
     key: 'StairStepper',
     label: '爬楼',
     emoji: '🪜',
-    color: '#34d399',
-    colorBg: 'rgba(52, 211, 153, 0.12)',
+    color: '#30d158',
+    colorBg: 'rgba(48, 209, 88, 0.12)',
     unit: 'km',
     typeMatches: [
       'StairStepper', 'stairstepper',

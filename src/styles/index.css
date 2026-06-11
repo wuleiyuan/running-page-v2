@@ -1,9 +1,40 @@
-/* IBM Plex Sans and IBM Plex Mono fonts */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
-
+/* ===== Sports Fair 字体系统 =====
+ * 策略：用系统字体栈（macOS SF Pro / iOS SF Pro / Windows Segoe UI / Android Roboto），
+ *      避免 Google Fonts 的 200ms 网络往返，首屏立刻有字。
+ * 数字强制 tabular-nums：里程/配速/时长变数字不跳动。
+ * 中文用 PingFang SC（macOS/iOS 自动 fallback 到系统中文）。
+ */
 @import 'tailwindcss';
 @import './mobile.css';
+
+:root {
+  /* === 字体栈 === */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI',
+    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:
+    ui-monospace, 'SF Mono', 'SF Pro Mono', Menlo, Consolas,
+    'Liberation Mono', 'IBM Plex Mono', monospace;
+  --font-num:
+    'SF Pro Display', 'SF Pro Rounded', -apple-system, BlinkMacSystemFont,
+    'Helvetica Neue', 'PingFang SC', system-ui, sans-serif;
+}
+
+@layer base {
+  html, body {
+    font-family: var(--font-sans);
+    /* 全局数字等宽对齐 */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'cv11' 1;
+  }
+  /* 任何 .num / 数字密集区用 SF Pro + tabular-nums */
+  .num, .metric, [data-num] {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+}
 
 :root {
   /* global */
@@ -21,90 +52,86 @@
   --color-activity-card: var(--color-activity-card);
   /* svg */
   --svg-color-active-cell: var(--svg-color-inactive-cell);
-  /* fonts */
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  /* fonts (legacy alias) */
+  --font-sans-legacy: var(--font-sans);
+  --font-mono-legacy: var(--font-mono);
 }
 
 /* 1. System Theme (Base) */
 @media (prefers-color-scheme: light) {
   :root {
-    --color-brand: var(--color-sky-900);
-    --color-secondary: var(--color-sky-800);
-    --color-bg: var(--color-neutral-100);
-    --color-tx: var(--color-sky-900);
-    --color-hr: var(--color-neutral-300);
-    --color-selected: var(--color-sky-900);
-    --color-run-date: var(--color-neutral-800);
-    --color-run-table-thead: var(--color-neutral-800);
-    --color-run-row-hover-background: var(--color-neutral-200);
-    --color-activity-card: var(--color-neutral-300);
-    --svg-color-active-cell: var(--color-neutral-400);
-    --svg-special-color: #d4a574;
-    --svg-special-color2: #c5756b;
-    --font-sans: 'IBM Plex Sans', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
+    /* Apple HIG Light: 极浅灰 #F5F5F7 + 深空灰文字 */
+    --color-brand: #1d1d1f;            /* System Label */
+    --color-secondary: #424245;        /* System Secondary Label */
+    --color-bg: #f5f5f7;               /* System Gray 6 (background) */
+    --color-tx: #1d1d1f;
+    --color-hr: rgba(0, 0, 0, 0.08);   /* hairline */
+    --color-selected: #007aff;         /* System Blue */
+    --color-run-date: #1d1d1f;
+    --color-run-table-thead: #6e6e73;  /* System Secondary Label */
+    --color-run-row-hover-background: rgba(0, 0, 0, 0.04);
+    --color-activity-card: #ffffff;    /* 白卡片浮在 #f5f5f7 上 */
+    --color-activity-card-border: rgba(0, 0, 0, 0.06);
+    --svg-color-active-cell: #34c759;  /* System Green（轨迹高亮）*/
+    --svg-special-color: #ff9500;      /* System Orange */
+    --svg-special-color2: #ff3b30;    /* System Red */
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* const nike = 'rgb(224,237,94)'; */
-    --color-brand: #e0ed5e;
-    --color-secondary: #ccd94a;
-    --color-bg: var(--color-neutral-900);
-    --color-tx: var(--color-brand);
-    --color-hr: var(--color-red-500);
-    --color-selected: var(--color-brand);
-    --color-run-date: var(--color-neutral-300);
-    --color-run-table-thead: var(--color-zinc-300);
-    --color-run-row-hover-background: var(--color-neutral-800);
-    --color-activity-card: var(--color-neutral-700);
-    --svg-color-active-cell: #4dd2ff;
-    --svg-special-color: #f7d02c;
-    --svg-special-color2: #f56c6c;
-    --font-sans: 'IBM Plex Sans', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
+    /* Apple HIG Dark: 纯黑 #000000 + #1C1C1E 卡片浮层 */
+    --color-brand: #f5f5f7;
+    --color-secondary: #98989d;        /* System Secondary Label (Dark) */
+    --color-bg: #000000;               /* 纯黑 */
+    --color-tx: #f5f5f7;
+    --color-hr: rgba(255, 255, 255, 0.08);
+    --color-selected: #0a84ff;         /* System Blue (Dark) */
+    --color-run-date: #f5f5f7;
+    --color-run-table-thead: #98989d;
+    --color-run-row-hover-background: rgba(255, 255, 255, 0.06);
+    --color-activity-card: #1c1c1e;    /* iOS Card Background (Dark) */
+    --color-activity-card-border: rgba(255, 255, 255, 0.08);
+    --svg-color-active-cell: #34c759;  /* System Green (Dark) */
+    --svg-special-color: #ff9f0a;      /* System Orange (Dark) */
+    --svg-special-color2: #ff453a;    /* System Red (Dark) */
   }
 }
 
 /* 2. Manual Override (Higher Priority) */
 [data-theme='light'] {
-  --color-brand: var(--color-sky-900);
-  --color-secondary: var(--color-sky-800);
-  --color-bg: var(--color-neutral-100);
-  --color-tx: var(--color-sky-900);
-  --color-hr: var(--color-neutral-300);
-  --color-selected: var(--color-sky-900);
-  --color-run-date: var(--color-neutral-800);
-  --color-run-table-thead: var(--color-neutral-800);
-  --color-run-row-hover-background: var(--color-neutral-200);
-  --color-activity-card: var(--color-neutral-300);
-  --svg-color-inactive-cell: var(--color-neutral-600);
-  --svg-color-active-cell: var(--color-neutral-400);
-  --svg-special-color: #d4a574;
-  --svg-special-color2: #c5756b;
-  --font-sans: 'IBM Plex Sans', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --color-brand: #1d1d1f;
+  --color-secondary: #424245;
+  --color-bg: #f5f5f7;
+  --color-tx: #1d1d1f;
+  --color-hr: rgba(0, 0, 0, 0.08);
+  --color-selected: #007aff;
+  --color-run-date: #1d1d1f;
+  --color-run-table-thead: #6e6e73;
+  --color-run-row-hover-background: rgba(0, 0, 0, 0.04);
+  --color-activity-card: #ffffff;
+  --color-activity-card-border: rgba(0, 0, 0, 0.06);
+  --svg-color-inactive-cell: rgba(0, 0, 0, 0.06);
+  --svg-color-active-cell: #34c759;
+  --svg-special-color: #ff9500;
+  --svg-special-color2: #ff3b30;
 }
 
 [data-theme='dark'] {
-  /* const nike = 'rgb(224,237,94)'; */
-  --color-brand: #e0ed5e;
-  --color-secondary: #ccd94a;
-  --color-bg: var(--color-neutral-900);
-  --color-tx: var(--color-brand);
-  --color-hr: var(--color-red-500);
-  --color-selected: var(--color-brand);
-  --color-run-date: var(--color-neutral-300);
-  --color-run-table-thead: var(--color-zinc-300);
-  --color-run-row-hover-background: var(--color-neutral-800);
-  --color-activity-card: var(--color-neutral-700);
-  --svg-color-active-cell: #4dd2ff;
-  --svg-special-color: #f7d02c;
-  --svg-special-color2: #f56c6c;
-  --font-sans: 'IBM Plex Sans', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --color-brand: #f5f5f7;
+  --color-secondary: #98989d;
+  --color-bg: #000000;
+  --color-tx: #f5f5f7;
+  --color-hr: rgba(255, 255, 255, 0.08);
+  --color-selected: #0a84ff;
+  --color-run-date: #f5f5f7;
+  --color-run-table-thead: #98989d;
+  --color-run-row-hover-background: rgba(255, 255, 255, 0.06);
+  --color-activity-card: #1c1c1e;
+  --color-activity-card-border: rgba(255, 255, 255, 0.08);
+  --svg-color-active-cell: #34c759;
+  --svg-special-color: #ff9f0a;
+  --svg-special-color2: #ff453a;
 }
 
 @layer base {

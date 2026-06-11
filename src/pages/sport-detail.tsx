@@ -246,8 +246,8 @@ const SportDetail = () => {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.15)" />
-                  <XAxis dataKey="period" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-                  <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} unit="km" />
+                  <XAxis dataKey="period" tick={{ fill: '#98989d', fontSize: 11 }} />
+                  <YAxis tick={{ fill: '#98989d', fontSize: 11 }} unit="km" />
                   <Tooltip
                     contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 8 }}
                     labelStyle={{ color: '#e2e8f0' }}
