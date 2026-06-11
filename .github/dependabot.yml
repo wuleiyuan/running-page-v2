@@ -1,34 +1,22 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
+    enabled: false
     directory: /
-    open-pull-requests-limit: 1
     schedule:
       interval: monthly
-    commit-message:
-      prefix: github-actions
-
-  
   - package-ecosystem: npm
+    enabled: false
     directory: /
-    open-pull-requests-limit: 1
     schedule:
       interval: monthly
-    commit-message:
-      prefix: npm
-
   - package-ecosystem: pip
+    enabled: false
     directory: /
-    open-pull-requests-limit: 1
     schedule:
       interval: monthly
-    commit-message:
-      prefix: pip
-
   - package-ecosystem: uv
+    enabled: false
     directory: /
-    open-pull-requests-limit: 1
     schedule:
       interval: monthly
-    commit-message:
-      prefix: uv
