@@ -1,8 +1,8 @@
 # Running Page (V2 - Vercel Edition)
 
 > **Version: 2.1.0**
-> **GitHub Repository**: [wuleiyuan/running-page-v2](https://github.com/wuleiyuan/running-page-v2)
-> **Live Demo**: [https://running-page-v2.vercel.app](https://running-page-v2.vercel.app)
+> **GitHub Repository**: https://sports-fair.vercel.app/
+> **Live Demo**: https://sports-fair.vercel.app/
 >
 > **Version Update (2026-02-28)**:
 > - **Engine Update**: Fully migrated from Mapbox to the completely open-source **MapLibre** engine.
