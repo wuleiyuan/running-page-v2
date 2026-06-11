@@ -25,7 +25,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from config import JSON_FILE, SQL_FILE  # noqa: E402
 
-# Apple HealthKit workoutActivityType → running-page type
+# Apple HealthKit workoutActivityType → Sports Fair type
 XML_TYPE_MAP = {
     "HKWorkoutActivityTypeRunning": ("Run", "跑步"),
     "HKWorkoutActivityTypeWalking": ("Walk", "步行"),
@@ -126,7 +126,7 @@ def duration_to_minutes(duration_str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Apple Health export.xml → running-page db")
+    parser = argparse.ArgumentParser(description="Apple Health export.xml → Sports Fair db")
     parser.add_argument("--xml", required=True, help="导出.xml 路径")
     parser.add_argument("--dry-run", action="store_true", help="只解析不写 db")
     args = parser.parse_args()

@@ -17,7 +17,7 @@ My own best practices:
 1. running/hiking/Cycling (Huawei/OPPO) -> Keep
 2. Keep -> Strava (add this scripts to run_data_sync.yml)
 3. Road Cycling(Garmin) -> Strava.
-4. running_page(Strava)
+4. Sports Fair(Strava)
 
 """
 KEEP2STRAVA_BK_PATH = os.path.join(OUTPUT_DIR, "keep2strava.json")

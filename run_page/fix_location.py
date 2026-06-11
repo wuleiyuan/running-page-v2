@@ -19,7 +19,7 @@ import polyline
 from generator.db import Activity, init_db
 
 # Initialize geocoder
-geocoder = Nominatim(user_agent="running_page_location_fix")
+geocoder = Nominatim(user_agent="sports_fair_location_fix")
 
 
 def reverse_geocode(lat, lon, max_retries=3):

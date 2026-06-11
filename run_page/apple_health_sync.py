@@ -1,7 +1,7 @@
 """
 Apple Health Auto Export Sync (简化版，不依赖 stravalib)
 
-从 Health Auto Export (iOS App) 导出的 JSON 喂数据到 running-page-v2 的 data.db。
+从 Health Auto Export (iOS App) 导出的 JSON 喂数据到 Sports Fair 的 data.db。
 
 支持的运动类型：跑步 / 徒步 / 骑行 / 步行 / 瑜伽 / 力量训练 / 等等
 （取决于 Apple Workout activityType 字段）
@@ -52,7 +52,7 @@ except Exception as e:
     fake_geopy = types.ModuleType("geopy")
     fake_geopy.geocoders = types.ModuleType("geopy.geocoders")
     fake_geopy.geocoders.Nominatim = lambda **kw: type("N", (), {"reverse": staticmethod(lambda *a, **k: None)})()
-    fake_geopy.geocoders.options = SimpleNamespace(default_user_agent="running_page")
+    fake_geopy.geocoders.options = SimpleNamespace(default_user_agent="sports_fair")
     sys.modules["geopy"] = fake_geopy
     sys.modules["geopy.geocoders"] = fake_geopy.geocoders
     _spec.loader.exec_module(hae_db)
@@ -78,7 +78,7 @@ DEFAULT_ICLOUD_DIR = (
     / "HealthAutoExport"
 )
 
-# Apple workout activityType → running-page 标准 type 字段
+# Apple workout activityType → Sports Fair 标准 type 字段
 # Strava 兼容名（前端按这个渲染图标和颜色）
 HAE_TYPE_MAP = {
     # 有氧
@@ -346,7 +346,7 @@ def run_apple_health_sync(data_dir=None, dry_run=False):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Apple Health Auto Export → running-page sync")
+    parser = argparse.ArgumentParser(description="Apple Health Auto Export → Sports Fair sync")
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_ICLOUD_DIR, help="HAE iCloud 目录")
     parser.add_argument("--dry-run", action="store_true", help="只解析不写 db")
     args = parser.parse_args()

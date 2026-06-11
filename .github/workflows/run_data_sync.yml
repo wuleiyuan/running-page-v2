@@ -20,7 +20,7 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
   RUN_TYPE: keep
   ATHLETE: WuLeiYuan
-  TITLE: WuLeiYuan Running
+  TITLE: WuLeiYuan Sports
   MIN_GRID_DISTANCE: 10
   TITLE_GRID: Over 10km Runs
   IGNORE_START_END_RANGE: 10
@@ -110,7 +110,7 @@ jobs:
         env:
           BIRTHDAY_MONTH: ${{ env.BIRTHDAY_MONTH }}
         run: |
-          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367" --special-color2 "#f0a1a8" --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Runner Month of Life" --sport-type running
+          python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367" --special-color2 "#f0a1a8" --output assets/mol_running.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Sports Month of Life" --sport-type running
           python run_page/gen_svg.py --from-db --type monthoflife --birth "${{env.BIRTHDAY_MONTH}}" --special-color "#f9d367" --special-color2 "#f0a1a8" --output assets/mol.svg --use-localtime --athlete "${{env.ATHLETE}}" --title "Month of Life" --sport-type all
 
       - name: Make year summary
@@ -141,7 +141,7 @@ jobs:
             exit 0
           fi
           echo "=== Git commit ==="
-          git commit -m 'chore: update running data from Keep'
+          git commit -m 'chore: sync sports data'
           echo "=== Git push with force-with-lease ==="
           git push origin master --force-with-lease || {
             echo "=== force-with-lease failed, retrying with force ==="

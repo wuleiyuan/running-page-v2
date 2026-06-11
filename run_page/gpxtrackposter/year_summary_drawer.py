@@ -32,7 +32,7 @@ class YearSummaryDrawer(TracksDrawer):
 
     def draw(self, dr: svgwrite.Drawing, size: XY, offset: XY):
         """Draw the year summary poster"""
-        # Colors - use running_page default colors
+        # Colors - use Sports Fair default colors
         text_color = self.poster.colors.get("text", "#FFFFFF")
         track_color = self.poster.colors.get("track", "#4DD2FF")
         special_color = self.poster.colors.get("special", "#FFFF00")
@@ -221,7 +221,7 @@ class YearSummaryDrawer(TracksDrawer):
         footer_y = dots_last_row_center + 3
         dr.add(
             dr.text(
-                f"running_page/{self.year}",
+                f"Sports Fair/{self.year}",
                 insert=(left_margin, footer_y),
                 fill=dim_color,
                 style="font-size:7px; font-family:Arial;",

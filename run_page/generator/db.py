@@ -25,7 +25,7 @@ def randomword():
     return "".join(random.choice(letters) for i in range(4))
 
 
-options.default_user_agent = "running_page"
+options.default_user_agent = "sports_fair"
 # reverse the location (lat, lon) -> location detail
 g = Nominatim(user_agent=randomword())
 
