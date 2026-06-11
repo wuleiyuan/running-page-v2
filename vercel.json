@@ -4,8 +4,6 @@
       "gh-pages": false
     }
   },
-  "buildCommand": "bash scripts/vercel-ignore-build.sh && pnpm run build",
-  "installCommand": "pnpm install --no-frozen-lockfile",
   "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "github": {
     "silent": false,
