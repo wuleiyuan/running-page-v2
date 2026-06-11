@@ -4,6 +4,7 @@
       "gh-pages": false
     }
   },
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "github": {
     "silent": false,

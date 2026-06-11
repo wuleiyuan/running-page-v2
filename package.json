@@ -79,12 +79,6 @@
   "pnpm": {
     "overrides": {
       "@types/node": "^24.2.1"
-    },
-    "onlyBuiltDependencies": [
-      "@rollup/rollup-linux-x64-gnu",
-      "@rollup/rollup-linux-arm64-gnu",
-      "@esbuild/linux-x64",
-      "@esbuild/linux-arm64"
-    ]
+    }
   }
 }
