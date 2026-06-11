@@ -55,7 +55,7 @@ const HealthPage: React.FC = () => {
   return (
     <Layout>
       <Helmet>
-        <title>健康分析 · WuLeiYuan Running</title>
+        <title>健康分析 · Sports Fair</title>
         <html lang="zh-CN" data-theme={theme} />
       </Helmet>
 
