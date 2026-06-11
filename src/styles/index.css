@@ -19,6 +19,13 @@
   --font-num:
     'SF Pro Display', 'SF Pro Rounded', -apple-system, BlinkMacSystemFont,
     'Helvetica Neue', 'PingFang SC', system-ui, sans-serif;
+  /* === Apple 缓动曲线 ===
+   * cubic-bezier(0.16, 1, 0.3, 1) 是 iOS 系统级 "ease-out" 曲线,
+   * 比 Tailwind 默认 cubic-bezier(.4, 0, .2, 1) 起步更柔, 收尾更稳.
+   * 应用: 全局 transition 缓动, 卡片渐入/hover/页面切换.
+   */
+  --ease-ios: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-ios-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
 @layer base {
@@ -140,9 +147,19 @@
     background-color: var(--color-background);
     color: var(--color-brand);
     transition:
-      background-color 0.1s ease,
-      color 0.1s ease;
+      background-color 0.3s var(--ease-ios),
+      color 0.3s var(--ease-ios);
     font-family: var(--font-sans);
+  }
+}
+
+/* 全局 transition 默认缓动: 用 iOS 曲线
+ * 任何 opacity / transform 切换自动更丝滑
+ * 例: SportCard 渐入, 页面 hover, Modal 弹出
+ */
+@layer base {
+  * {
+    transition-timing-function: var(--ease-ios);
   }
 }
 

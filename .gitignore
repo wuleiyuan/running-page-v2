@@ -4,6 +4,8 @@
 *.pyc
 node_modules
 yarn-error.log
+# npm lockfile: project uses pnpm (see packageManager field), npm lockfile is legacy from upstream
+package-lock.json
 
 # Build directory
 /build

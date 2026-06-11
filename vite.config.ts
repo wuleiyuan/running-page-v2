@@ -4,7 +4,6 @@ import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 import tailwindcss from '@tailwindcss/vite';
-import { fileURLToPath, URL } from 'node:url';
 
 // The following are known larger packages or packages that can be loaded asynchronously.
 const individuallyPackages = [
@@ -27,12 +26,6 @@ const colorClassMapping: { [key: string]: string } = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@assets': fileURLToPath(new URL('./assets', import.meta.url)),
-    },
-  },
   plugins: [
     react(),
     tailwindcss(),
