@@ -2,7 +2,9 @@ import argparse
 import base64
 import json
 import os
+import sys
 import time
+import traceback
 import zlib
 from collections import namedtuple
 from datetime import datetime, timedelta, timezone
@@ -21,7 +23,7 @@ from config import (
 )
 from Crypto.Cipher import AES
 from generator import Generator
-from utils import adjust_time
+from utils import adjust_time, http_get_with_retry, http_post_with_retry, safe_run
 import xml.etree.ElementTree as ET
 
 # 同步的运动类型列表 - 按用户 2026-06-09 反馈：户外行走合并到 Hiking，爬楼独立
@@ -62,7 +64,7 @@ def login(session, mobile, password):
         "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
     }
     data = {"mobile": mobile, "password": password}
-    r = session.post(LOGIN_API, headers=headers, data=data)
+    r = http_post_with_retry(session, LOGIN_API, headers=headers, data=data)
     if r.ok:
         token = r.json()["data"]["token"]
         headers["Authorization"] = f"Bearer {token}"
@@ -74,7 +76,8 @@ def get_to_download_runs_ids(session, headers, sport_type):
     result = []
 
     while 1:
-        r = session.get(
+        r = http_get_with_retry(
+            session,
             RUN_DATA_API.format(sport_type=sport_type, last_date=last_date),
             headers=headers,
         )
@@ -110,8 +113,10 @@ def get_to_download_runs_ids(session, headers, sport_type):
 
 
 def get_single_run_data(session, headers, run_id, sport_type):
-    r = session.get(
-        RUN_LOG_API.format(sport_type=sport_type, run_id=run_id), headers=headers
+    r = http_get_with_retry(
+        session,
+        RUN_LOG_API.format(sport_type=sport_type, run_id=run_id),
+        headers=headers,
     )
     if r.ok:
         return r.json()
@@ -557,10 +562,20 @@ if __name__ == "__main__":
         assert (
             _tpye in KEEP_SPORT_TYPES
         ), f"{_tpye} are not supported type, please make sure that the type entered in the {KEEP_SPORT_TYPES}"
-    run_keep_sync(
-        options.phone_number,
-        options.password,
-        options.sync_types,
-        options.with_gpx,
-        options.with_tcx,
-    )
+    # 容错：单 type 失败不阻断其他 type；最终给 CI 一个非零 exit
+    # 这样 keep source 整段挂掉时 CI 仍能记录，garmin/其他 source 在 workflow 里继续跑
+    exit_code = 0
+    for _tpye in options.sync_types:
+        try:
+            run_keep_sync(
+                options.phone_number,
+                options.password,
+                [_tpye],
+                options.with_gpx,
+                options.with_tcx,
+            )
+        except Exception as e:
+            print(f"[KEEP-FAIL] type={_tpye} error: {e}", file=sys.stderr)
+            traceback.print_exc(file=sys.stderr)
+            exit_code = 1
+    sys.exit(exit_code)

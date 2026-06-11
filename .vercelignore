@@ -1,2 +1,95 @@
-requirements.txt  
-requirements-dev.txt  
+# ============================================================
+# Vercel 构建时忽略的文件 / 目录
+# 目的：让 Vercel 上传上下文从 1GB+ 缩到 ~5MB
+# 触发：触发 Vercel 重新识别，删除 project 根 cache 后生效
+# ============================================================
+
+# ---- Python 同步脚本（前端构建完全不需要）----
+run_page/
+scripts/
+
+# ---- 同步数据产物 ----
+# activities.json 在 src/static/ 里同步放了一份
+# 根目录的仅供本地调试
+activities.json
+
+# ---- Python 缓存与依赖（前端用不到）----
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.venv/
+**/venv/
+requirements.txt
+requirements-dev.txt
+Pipfile
+Pipfile.lock
+poetry.lock
+*.egg-info/
+.python-version
+.python-version.bak
+
+# ---- 前端依赖（Vercel 自己跑 npm install）----
+node_modules/
+.yarn/
+
+# ---- 缓存与构建产物 ----
+.cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+public/
+
+# ---- IDE / OS ----
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.fleet/
+
+# ---- CI 与配置 ----
+.github/
+.git/
+.gitignore
+.gitattributes
+.vercelignore
+.prettierignore
+.prettierrc.cjs
+.editorconfig
+.eslintrc*
+Dockerfile
+.dockerignore
+docker-compose*.yml
+docker-compose*.yaml
+
+# ---- 文档与示例 ----
+README*.md
+LICENSE
+CONTRIBUTING.md
+DEVELOPMENT_LOG.md
+PROJECT_NOTES.md
+CHANGELOG.md
+config-example.yaml
+.env
+.env.example
+.env.local
+.env.*.local
+
+# ---- 数据源追踪与备份 ----
+data/
+gpx_files/
+GPX_OUT/
+TCX_OUT/
+FIT_OUT/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*.bak
+*.log
+
+# ---- Misc ----
+yarn-error.log
+npm-debug.log*
+.DS_Store

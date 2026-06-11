@@ -56,11 +56,43 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
-          cache-dependency-path: 'requirements.txt'
+          # hash 包含 requirements.txt + 同步脚本源码（同步脚本里 import 啥包变化也强制重装）
+          cache-dependency-path: |
+            requirements.txt
+            run_page/keep_sync.py
+            run_page/apple_health_sync.py
+            run_page/apple_health_xml_sync.py
+            run_page/apple_health_records_sync.py
+            run_page/garmin_sync.py
+            run_page/garmin_sync_cn_global.py
+            run_page/strava_sync.py
+            run_page/nike_sync.py
+            run_page/gpx_sync.py
+            run_page/fit_sync.py
+            run_page/codoon_sync.py
+            run_page/coros_sync.py
+            run_page/joyrun_sync.py
+            run_page/igpsport_sync.py
+            run_page/komoot_sync.py
+            run_page/generator/__init__.py
+            run_page/utils.py
+            run_page/config.py
+
+      - name: Cache pip download artifacts
+        # 二次保险：setup-python@v5 的 cache 已包含 wheel 下载
+        # 这一步是 actions/cache 直接缓存 ~/.cache/pip，避免 runner 跨 step 重下
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ runner.os }}-${{ hashFiles('requirements.txt', 'run_page/keep_sync.py') }}
+          restore-keys: |
+            pip-${{ runner.os }}-
 
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          echo "=== Installed package count ==="
+          pip list | wc -l
 
       - name: Cache Data Files
         if: env.SAVE_DATA_IN_GITHUB_CACHE == 'true'
