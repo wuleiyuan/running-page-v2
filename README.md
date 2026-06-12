@@ -1,16 +1,38 @@
 # Sports Fair - 运动集市
 
-> **Version: 2.1.0**
+> **Version: 2.1.12** · [Releases](https://github.com/wuleiyuan/sports-fair/releases) · [Changelog](CHANGELOG.md)
 > **GitHub Repository**: [wuleiyuan/sports-fair](https://github.com/wuleiyuan/sports-fair)
 > **Live Demo**: [https://sports-fair.vercel.app](https://sports-fair.vercel.app)
+> **Deploy Status**: ![Vercel](https://img.shields.io/badge/Vercel-Live-brightgreen)
 >
 > Forked from [yihong0618/running_page](https://github.com/yihong0618/running_page).
 >
-> **Version Update (2026-02-28)**:
-> - **Engine Update**: Fully migrated from Mapbox to the completely open-source **MapLibre** engine.
-> - **Removed Restrictions**: Removed dependencies on `mapbox-gl` and its telemetry, completely resolving CORS and validation errors caused by missing Mapbox Tokens.
-> - **Map Source**: Default to the free MapCN tile service. No API token configuration is required for normal map rendering.
-> - This project serves as the next-generation refactored version, highly recommended to be deployed on Vercel.
+> **Recent Updates (2026-06-12)**:
+> - **Health Assessment Module** (v2.1.5-2.1.11): 5-dimension health evaluation (RHR / HRV / Sleep / Steps / Training Load) with ACWR + TRIMP algorithm
+> - **Anomaly Data Filter** (v2.1.3-2.1.4): Skip 0-distance + abnormal-speed activities
+> - **Sport Type Compatibility** (v2.1.4): Distance / count / duration display per sport
+> - **MapLibre Engine** (2026-02-28): Fully open-source map, no Mapbox token required
+
+## Features
+
+- 🏃 **Multi-source sync**: Apple HealthKit / Strava / Garmin / Keep / GPX
+- 🗺️ **MapLibre map**: Open-source, no API token needed
+- 📊 **Health Assessment**: 5-dimension evaluation + ACWR + TRIMP
+- 🏅 **Sport compatibility**: Rope skipping, stair climbing, swimming, cycling, etc.
+- 📱 **PWA support**: Install as app
+- 🚀 **One-click deploy**: Vercel
+
+## Documentation
+
+- [CHANGELOG.md](CHANGELOG.md) - Version history
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
+- [docs/VERSION_PROCESS.md](docs/VERSION_PROCESS.md) - Version bumping process
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Community guidelines
+- [SECURITY.md](SECURITY.md) - Security policy
+
+## License
+
+[MIT](LICENSE)
 ---
 
 

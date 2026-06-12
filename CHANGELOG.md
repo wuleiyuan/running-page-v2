@@ -11,6 +11,24 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.13] - 2026-06-12
+
+### 新增 (按用户强烈反馈：标准 GitHub 流程)
+- **README.md** 更新：v2.1.12 + Releases 链接 + Vercel 徽章 + Features 列表 + 文档导航
+- **CONTRIBUTING.md** 完整重写：开发指南 + Conventional Commits + PR 流程（之前只有 16B 占位）
+- **CODE_OF_CONDUCT.md** 新增：Contributor Covenant 2.1 完整版
+- **SECURITY.md** 新增：漏洞报告流程 + 支持版本表
+- **.github/ISSUE_TEMPLATE/bug_report.md** 新增
+- **.github/ISSUE_TEMPLATE/feature_request.md** 新增
+- **.github/PULL_REQUEST_TEMPLATE.md** 新增（含 Version Bump checklist）
+- **docs/VERSION_PROCESS.md** 新增（公开版，PROJECT_NOTES.md 公开部分拆出来）
+- **.github/workflows/release.yml** trigger 改为 `push: tags: ['v*']`（让 tag push 自动 create release）
+
+### 流程改进
+- 修根因：v2.1.1 之后 release 缺失是因为 workflow trigger 是 `workflow_dispatch`（手动），没人跑
+- 解法：tag push 自动 create release
+- 向后兼容：保留 `workflow_dispatch` 入口
+
 ## [2.1.12] - 2026-06-12
 
 ### 新增 (按用户强烈反馈：release 自动化 + 一次性回填)

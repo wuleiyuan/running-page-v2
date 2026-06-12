@@ -1,6 +1,11 @@
 name: Release
 
+# v2.1.13: trigger 改为 push tags，让 tag push 自动 create release
+# workflow_dispatch 保留作为手动触发（兼容现有调用）
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       version_type:
