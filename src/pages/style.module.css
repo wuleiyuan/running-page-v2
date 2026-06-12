@@ -208,6 +208,84 @@
   margin-bottom: 32px;
 }
 
+/* v2.1.9: 训练负荷 ACWR 区间色带 */
+.acwr-zone-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 4px 0 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.acwr-zone {
+  height: 100%;
+  transition: opacity 0.2s;
+}
+
+.acwr-zone-labels {
+  display: flex;
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 8px;
+}
+
+.acwr-zone-label {
+  text-align: center;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.acwr-position-wrap {
+  position: relative;
+  height: 8px;
+  margin: -4px 0 8px;
+}
+
+.acwr-position-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s;
+}
+
+.acwr-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.acwr-status-label {
+  display: inline-block;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+}
+
+.acwr-status-en {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary, #888);
+  font-style: italic;
+}
+
+/* AI 教练建议 */
+.ai-guidance {
+  margin-top: 4px;
+}
+
+.ai-guidance p {
+  margin: 0;
+}
+
 .disclaimer {
   margin-top: 48px;
   padding: 16px 20px;

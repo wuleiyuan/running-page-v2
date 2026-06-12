@@ -68,9 +68,17 @@ const HealthAssessPage: React.FC = () => {
 
         {/* 评估卡片网格 */}
         <section className={styles.cardsGrid}>
-          {bundle.cards.map((card) => (
-            <AssessmentCard key={card.key} card={card} />
-          ))}
+          {bundle.cards.map((card) => {
+            const isTrainingLoad = card.key === 'training_load';
+            const acwrRatio = isTrainingLoad ? parseFloat(card.main) || 0 : 0;
+            return (
+              <AssessmentCard
+                key={card.key}
+                card={card}
+                acwrRatio={isTrainingLoad ? acwrRatio : undefined}
+              />
+            );
+          })}
         </section>
 
         {/* 医学免责声明 */}

@@ -11,6 +11,28 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.9] - 2026-06-12
+
+### 新增 (UI 重构：按 Gemini 设计稿)
+- **assessTrainingLoad** 改用 Banister TRIMP 替代单纯时长，TRIMP 优先用 average_heartrate 算强度权重，无则降级为 duration × 1.0
+- **assessTrainingLoad** 返回 { card, trend }，trend 数组保留供 v2.2.0 进一步使用
+- **AssessmentBundle** 新增 `trainingLoadTrend?: number[]` 字段
+- **AssessmentCard** 训练负荷卡片显示 **ACWR 区间色带**（4 段：恢复期紫/最佳提升绿/过度训练橙/高危预警蓝）+ 位置圆点 + 状态评级标签 + 静态 AI 教练建议
+- **acwrZone()** 函数：根据 ACWR ratio 返回当前区间 + 业务级建议（维持训练/减量 20%/减量 50% 等）
+- **ACWR 风险区间色带** 全新 CSS（色带 + 标签 + 位置圆点 + 状态标签）
+- 推翻前一版"7 天柱状图"设计（信息量低），改用 Gemini 设计稿的"区间色带 + 业务评级"方案
+
+### 算法细节
+- TRIMP 公式: T = duration_min × 0.64 × exp(1.92 × intensity)
+- intensity = clamp((avgHR - hrRest) / (hrMax - hrRest), 0, 1)
+- hrMax 近似 = top_stats.hr.max_ever (fallback 190)
+- hrRest 近似 = top_stats.rhr.median (fallback 60)
+- ACWR = acute7d / chronic28d，chronic = 28 天日均 × 7
+
+### 已知局限
+- TRIMP 强度依赖 average_heartrate，活动缺此字段时降级为 duration×1.0（保守）
+- hrMax / hrRest 是基于历史估算，不是个人精确值（理想需 Apple Watch 用户输入最大心率）
+
 ## [2.1.8] - 2026-06-12
 
 ### 修复

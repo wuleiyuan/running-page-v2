@@ -54,6 +54,10 @@ export interface AssessmentBundle {
   cards: AssessmentCard[];
   /** 综合建议（基于所有卡片生成） */
   overall: string;
+  /** 训练负荷 7 天每日 TRIMP 趋势 — v2.1.9 新增，供评估页柱状图 */
+  trainingLoadTrend?: number[];
+  /** AI 个性化建议占位 — v2.2.0 接入 LLM 后填充 */
+  aiGuidance?: string;
 }
 
 // ==================== 健康统计类型 ====================
@@ -113,6 +117,25 @@ const HEALTH_STATS = healthStatsRaw as HealthStats;
 const ACTIVITIES = activitiesJson as unknown as Activity[];
 
 // ==================== 工具函数 ====================
+
+/**
+ * 2026-06-12 v2.1.9: TRIMP (Training Impulse) 训练负荷算法
+ *
+ * 经典 Banister TRIMP: T = duration_min × 0.64 × exp(1.92 × intensity)
+ * intensity = (avgHR - hrRest) / (hrMax - hrRest)，限制在 [0, 1]
+ *
+ * 无 average_heartrate 时降级为 duration × 1.0（保守）
+ */
+function calcTRIMP(
+  avgHR: number | undefined,
+  durationMin: number,
+  hrMax: number,
+  hrRest: number
+): number {
+  if (!avgHR || hrMax <= hrRest) return durationMin; // fallback
+  const intensity = Math.max(0, Math.min(1, (avgHR - hrRest) / (hrMax - hrRest)));
+  return durationMin * 0.64 * Math.exp(1.92 * intensity);
+}
 
 /**
  * ISO date string (YYYY-MM-DD) → Date
@@ -395,15 +418,24 @@ function assessSteps(recent7: HealthStatsDaily[]): AssessmentCard {
 }
 
 /**
- * 训练负荷评估（ACWR 简化版）
+ * 训练负荷评估（ACWR + TRIMP + 7 天趋势）
+ * 2026-06-12 v2.1.9: 重构为返回 trend 数组，供评估页渲染柱状图
  *
- * 算法：acute (7 天) vs chronic (28 天) 训练时间比
+ * 算法：Banister TRIMP × 7d vs 28d 滚动比（ACWR）
  * - 0.8-1.3: 安全
  * - 1.3-1.5: 警戒（受伤风险上升）
  * - > 1.5: 危险（建议减量）
  * - < 0.8: 不足（可加量）
+ *
+ * TRIMP 优先使用 average_heartrate，无则降级为 duration_min × 1.0
  */
-function assessTrainingLoad(): AssessmentCard {
+interface TrainingLoadResult {
+  card: AssessmentCard;
+  /** 7 天每日 TRIMP，[0]=6 天前，[6]=今天 */
+  trend: number[];
+}
+
+function assessTrainingLoad(): TrainingLoadResult {
   const recent7 = getRecentActivities(7);
   const recent28 = getRecentActivities(28);
 
@@ -418,11 +450,38 @@ function assessTrainingLoad(): AssessmentCard {
 
   // 跑步 + 骑行 + 徒步 = 计入训练负荷
   const validTypes = new Set(['Run', 'Ride', 'Hiking', 'Walk']);
-  const sumSeconds = (acts: Activity[]) =>
-    acts.filter((a) => validTypes.has(a.type)).reduce((sum, a) => sum + parseMovingTime(a.moving_time), 0);
 
-  const acute7d = sumSeconds(recent7) / 3600; // hours
-  const chronic28d = sumSeconds(recent28) / 3600 / 4; // avg 7 days
+  // TRIMP 参数：hrMax 近似用 top_stats.hr.max_ever，hrRest 用 top_stats.rhr.median
+  const hrMax = HEALTH_STATS.top_stats.hr.max_ever || 190;
+  const hrRest = HEALTH_STATS.top_stats.rhr.median || 60;
+
+  // 单条活动的 TRIMP
+  const calcActTRIMP = (a: Activity): number => {
+    const durMin = parseMovingTime(a.moving_time) / 60;
+    return calcTRIMP(a.average_heartrate, durMin, hrMax, hrRest);
+  };
+
+  // 按日聚合（7 天 + 28 天）
+  const dailyTRIMP7 = new Array(7).fill(0);
+  const dailyTRIMP28 = new Array(28).fill(0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  recent28.forEach((a) => {
+    if (!validTypes.has(a.type)) return;
+    const local = a.start_date_local || '';
+    const d = new Date(local);
+    d.setHours(0, 0, 0, 0);
+    const daysAgo = Math.floor((today.getTime() - d.getTime()) / 86400000);
+    if (daysAgo < 0 || daysAgo >= 28) return;
+    const trimp = calcActTRIMP(a);
+    if (daysAgo < 7) dailyTRIMP7[6 - daysAgo] += trimp;
+    dailyTRIMP28[27 - daysAgo] += trimp;
+  });
+
+  const acute7d = dailyTRIMP7.reduce((a, b) => a + b, 0);
+  // chronic = 28 天日均 × 7 (与 acute 同窗口)
+  const chronic28d = (dailyTRIMP28.reduce((a, b) => a + b, 0) / 28) * 7;
 
   const ratio = chronic28d > 0 ? acute7d / chronic28d : 0;
 
@@ -434,25 +493,28 @@ function assessTrainingLoad(): AssessmentCard {
     advice = '近 28 天无训练记录。从低强度（步行 3km）开始恢复。';
   } else if (ratio >= 0.8 && ratio <= 1.3) {
     severity = 'good';
-    advice = '训练负荷在安全窗口 (0.8-1.3)，可保持当前节奏。';
+    advice = `训练负荷 ${ratio.toFixed(2)} 在安全窗口 (0.8-1.3)，可保持当前节奏。`;
   } else if (ratio > 1.3 && ratio <= 1.5) {
     severity = 'watch';
-    advice = `训练负荷比 ${ratio.toFixed(2)}，处于警戒区 (1.3-1.5)。建议本周减少 20% 训练量。`;
+    advice = `训练负荷 ${ratio.toFixed(2)} 处于警戒区 (1.3-1.5)。建议本周减少 20% 训练量。`;
   } else if (ratio > 1.5) {
     severity = 'urgent';
-    advice = `训练负荷比 ${ratio.toFixed(2)} 超过 1.5，受伤风险高。强烈建议减量 50% 或休息 1-2 天。`;
+    advice = `训练负荷 ${ratio.toFixed(2)} 超过 1.5，受伤风险高。强烈建议减量 50% 或休息 1-2 天。`;
   } else {
     severity = 'watch';
-    advice = `训练负荷比 ${ratio.toFixed(2)} 偏低 (<0.8)，可逐步加量。`;
+    advice = `训练负荷 ${ratio.toFixed(2)} 偏低 (<0.8)，可逐步加量。`;
   }
 
   return {
-    key: 'training_load',
-    title: '训练负荷（ACWR）',
-    main: ratio > 0 ? ratio.toFixed(2) : '—',
-    sub: `近 7 天 ${acute7d.toFixed(1)} h · 4 周均 ${chronic28d.toFixed(1)} h/周`,
-    severity,
-    advice,
+    card: {
+      key: 'training_load',
+      title: '训练负荷（ACWR / TRIMP）',
+      main: ratio > 0 ? ratio.toFixed(2) : '—',
+      sub: `近 7 天 ${acute7d.toFixed(0)} TRIMP · 4 周均 ${chronic28d.toFixed(0)} TRIMP/周`,
+      severity,
+      advice,
+    },
+    trend: dailyTRIMP7,
   };
 }
 
@@ -493,12 +555,13 @@ export function assessHealth(opts: AssessOptions = {}): AssessmentBundle {
   const { windowDays = 7, refDate = new Date() } = opts;
   const recent7 = getRecentDaily(windowDays);
 
+  const trainingLoadResult = assessTrainingLoad();
   const cards: AssessmentCard[] = [
     assessRHR(recent7),
     assessHRV(windowDays),
     assessSleep(recent7),
     assessSteps(recent7),
-    assessTrainingLoad(),
+    trainingLoadResult.card,
   ];
 
   return {
@@ -506,5 +569,6 @@ export function assessHealth(opts: AssessOptions = {}): AssessmentBundle {
     windowDays,
     cards,
     overall: buildOverall(cards),
+    trainingLoadTrend: trainingLoadResult.trend,
   };
 }
