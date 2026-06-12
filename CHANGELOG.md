@@ -8,8 +8,33 @@
 ## [未发布]
 
 ### 计划中
-- 运动健康评估建议模块（HealthAssessment UI）
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
+- 训练强度（HR / 配速）维度纳入训练负荷评估
+
+## [2.1.5] - 2026-06-12
+
+### 新增 (Minor)
+- **健康评估建议模块 UI 完整** (路由 `/health-assess`)
+  - `src/components/HealthAssessment/AssessmentCard.tsx` - 单卡片（5 个共用）
+  - `src/components/HealthAssessment/SeverityBadge.tsx` - 严重程度徽章（良好/关注/警告/紧急）
+  - `src/pages/health-assess.tsx` - 路由页（含 7 天/30 天切换）
+  - `src/pages/style.module.css` - 评估页专用样式
+  - `src/components/Header/index.tsx` - 顶部导航新增 🩺 评估建议 链接（同时加 📊 旅程总览、💚 健康分析）
+  - `src/main.tsx` - 路由注册
+- **vitest 测试框架引入**
+  - `vitest.config.ts` - vitest + tsconfigPaths 配置
+  - `src/utils/__tests__/healthAssessment.test.ts` - 7 个 describe 块
+  - `src/utils/__tests__/activitiesDisplay.test.ts` (v2.1.4 已有)
+  - `package.json` scripts: `test` / `test:watch` / `ci` 链路加 `test` 步骤
+  - `package.json` devDeps: `vitest@^3.2.4`
+- **文档 `HEALTH_ASSESSMENT.md`** - 用户视角 + 算法说明 + 数据局限 + 4 段医学/运动科学依据
+
+### 算法依据
+- RHR：AHA 静息心率分级（优秀 < 60 / 良好 60-64 / 一般 65-69 / 偏高 70-79）
+- HRV：Apple Heart Rate Study + Kubios 公开数据（高 > 50ms / 中 30-50ms / 低 < 30ms）
+- 睡眠：NSF 建议（7-9h 充足 / 6-7h 略少 / < 6h 不足）
+- 步数：WHO + 主流 App 共识（10000+ 优秀 / 7000-10000 良好 / 4000-7000 偏低 / < 4000 久坐）
+- 训练负荷（ACWR）：acute:chronic workload ratio 公开论文（0.8-1.3 安全 / 1.3-1.5 警戒 / > 1.5 危险）
 
 ## [2.1.4] - 2026-06-12
 
