@@ -404,6 +404,7 @@ const Index = () => {
             changeYear={changeYear}
             changeCity={changeCity}
             changeTitle={changeTitle}
+            sportKey="Run"
           />
         ) : (
           <YearsStat year={year} onClick={changeYear} />

@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import Stat from '@/components/Stat';
-import useActivities from '@/hooks/useActivities';
+import useActivities, { useSportActivities } from '@/hooks/useActivities';
+import { normalizeSportTypeCompat } from '@/utils/sportCompat';
 import { formatPace } from '@/utils/utils';
 import useHover from '@/hooks/useHover';
 import { yearStats, githubYearStats } from '@assets/index';
@@ -11,11 +12,17 @@ import { DIST_UNIT, M_TO_DIST, M_TO_ELEV } from '@/utils/utils';
 const YearStat = ({
   year,
   onClick,
+  sportKey = 'All',
 }: {
   year: string;
   onClick: (_year: string) => void;
+  sportKey?: 'All' | string;
 }) => {
-  let { activities: runs, years } = useActivities();
+  // 2026-06-12: 按 sportKey 过滤活动
+  // 主页 sportKey='Run' 时 YearStat('Total') 只算 Run 数据
+  // 不再混入 爬楼/跳绳/步行/骑行/徒步
+  const sportActivities = useSportActivities(sportKey);
+  const { years } = useActivities();
   // for hover
   const [hovered, eventHandlers] = useHover();
   // lazy Component
@@ -24,6 +31,7 @@ const YearStat = ({
     loadSvgComponent(githubYearStats, `./github_${year}.svg`)
   );
 
+  let runs = sportActivities;
   if (years.includes(year)) {
     runs = runs.filter((run) => run.start_date_local.slice(0, 4) === year);
   }
