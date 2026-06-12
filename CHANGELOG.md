@@ -11,6 +11,15 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.7] - 2026-06-12
+
+### 修复
+- **health_stats.py** HR / RHR / HRV 收集时过滤异常值（HR 30-220 / RHR 30-120 / HRV 10-200）
+- **health_stats.py** 睡眠过滤改为 1-14h（原本 16h 上限过松，午睡 < 1h 也过滤）
+- **health_stats.py** `compute_top_stats` 收集时同步加合理性过滤
+- **health.tsx** `safeByYear` useMemo 客户端异常值防御（双保险，根因在 health_stats.py 需重跑脚本）
+- **CHANGELOG** 标记 2.1.7 需手动重跑 `python3 run_page/health_stats.py` 才能让 health_stats.json 实际生效
+
 ## [2.1.6] - 2026-06-12
 
 ### 修复

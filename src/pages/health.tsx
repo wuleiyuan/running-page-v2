@@ -50,6 +50,23 @@ const HealthPage: React.FC = () => {
     [data]
   );
 
+  // 2026-06-12: client-side 异常值防御（双保险，根因在 health_stats.py）
+  // - 2026 HR 99.4 可能是手环记录了运动中 HR 而非静息
+  // - 2023 睡眠 11.09h 可能是手环没摘
+  // 展示端做一次合理性过滤，不合理的值改用 "—" 显示
+  const safeByYear = useMemo(() => {
+    const out: Record<string, YearStat> = {};
+    for (const [y, s] of Object.entries(data.by_year)) {
+      out[y] = {
+        ...s,
+        hr_mean: s.hr_mean !== undefined && s.hr_mean >= 30 && s.hr_mean <= 220 ? s.hr_mean : undefined,
+        hrv_mean: s.hrv_mean !== undefined && s.hrv_mean >= 10 && s.hrv_mean <= 200 ? s.hrv_mean : undefined,
+        sleep_median_h: s.sleep_median_h !== undefined && s.sleep_median_h >= 1 && s.sleep_median_h <= 14 ? s.sleep_median_h : undefined,
+      };
+    }
+    return out;
+  }, [data]);
+
   const ts = data.top_stats;
 
   return (
@@ -118,7 +135,7 @@ const HealthPage: React.FC = () => {
             </thead>
             <tbody>
               {yearKeys.map((y) => {
-                const s = data.by_year[y];
+                const s = safeByYear[y];
                 return (
                   <tr key={y}>
                     <td>{y}</td>

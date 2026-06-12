@@ -74,9 +74,10 @@ def aggregate_records(session):
     daily_data = defaultdict(dict)
 
     # --- HR ---
+    # 过滤异常值: < 30 (手环没戴) / > 220 (运动中 HR 静息混入)
     hr_by_date = by_type_date[("HeartRate", None)]
     for d, vals in hr_by_date.items():
-        vals = [v for v in vals if v is not None]
+        vals = [v for v in vals if v is not None and 30 <= v <= 220]
         if not vals:
             continue
         # 区间分布
@@ -95,9 +96,10 @@ def aggregate_records(session):
         }
 
     # --- RHR ---
+    # 过滤异常值: < 30 (数据缺失/手环未戴) / > 120 (异常高)
     rhr_by_date = by_type_date[("RestingHeartRate", None)]
     for d, vals in rhr_by_date.items():
-        vals = [v for v in vals if v is not None]
+        vals = [v for v in vals if v is not None and 30 <= v <= 120]
         if not vals:
             continue
         daily_data[d]["rhr"] = {
@@ -106,9 +108,10 @@ def aggregate_records(session):
         }
 
     # --- HRV ---
+    # 过滤异常值: < 10 / > 200 ms
     hrv_by_date = by_type_date[("HRV", None)]
     for d, vals in hrv_by_date.items():
-        vals = [v for v in vals if v is not None]
+        vals = [v for v in vals if v is not None and 10 <= v <= 200]
         if not vals:
             continue
         daily_data[d]["hrv"] = {
@@ -141,8 +144,11 @@ def aggregate_records(session):
     for d, s in sleep_by_date.items():
         if not s["total_sec"]:
             continue
-        # 过滤异常日（>16h 不可能）
-        if s["total_sec"] > 16 * 3600:
+        # 过滤异常日: < 1h (午睡片段/手环没戴) / > 14h (手环没摘/充电/误记)
+        if s["total_sec"] > 14 * 3600:
+            s["total_sec"] = 0
+            continue
+        if s["total_sec"] < 1 * 3600:
             s["total_sec"] = 0
             continue
         daily_data[d]["sleep"] = {
@@ -157,11 +163,11 @@ def aggregate_records(session):
 
 
 def compute_top_stats(daily_data):
-    """总体统计：总览数字"""
-    hr_means = [d["hr"]["mean"] for d in daily_data.values() if "hr" in d]
-    rhr_means = [d["rhr"]["mean"] for d in daily_data.values() if "rhr" in d]
-    hrv_means = [d["hrv"]["mean"] for d in daily_data.values() if "hrv" in d]
-    sleep_hours = [d["sleep"]["total_hours"] for d in daily_data.values() if "sleep" in d and d["sleep"]["total_hours"] > 0]
+    """总体统计：总览数字（已过滤异常值）"""
+    hr_means = [d["hr"]["mean"] for d in daily_data.values() if "hr" in d and 30 <= d["hr"]["mean"] <= 220]
+    rhr_means = [d["rhr"]["mean"] for d in daily_data.values() if "rhr" in d and 30 <= d["rhr"]["mean"] <= 120]
+    hrv_means = [d["hrv"]["mean"] for d in daily_data.values() if "hrv" in d and 10 <= d["hrv"]["mean"] <= 200]
+    sleep_hours = [d["sleep"]["total_hours"] for d in daily_data.values() if "sleep" in d and 1 <= d["sleep"]["total_hours"] <= 14]
     steps_totals = [d["steps"]["total"] for d in daily_data.values() if "steps" in d]
 
     def median(vals):
@@ -178,6 +184,7 @@ def compute_top_stats(daily_data):
             "max_ever": max((d["hr"]["max"] for d in daily_data.values() if "hr" in d), default=0),
             "days_with_data": len(hr_means),
         },
+        # RHR: 防御 min_ever 拿到的可能是 0/异常低
         "rhr": {
             "mean_all": round(sum(rhr_means) / len(rhr_means), 1) if rhr_means else 0,
             "median": round(median(rhr_means), 1) if rhr_means else 0,
