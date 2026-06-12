@@ -11,6 +11,19 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.8] - 2026-06-12
+
+### 修复
+- **scripts/bump_version.sh** 加 `-y/--yes` 自动模式：自动 git add + commit + tag + push
+- **scripts/bump_version.sh** 注释更新：明确说明"没 tag = GitHub Releases 看不到版本"
+- **scripts/bump_version.sh** 改后输出重写：手工模式只列 4 必做步 + 提示用 `-y` 自动化
+- **PROJECT_NOTES.md** §版本号流程 第 4 步改为 "git tag + push" 必做（原写"GitHub UI 发 release"是可选的）
+- **PROJECT_NOTES.md** §版本号流程 加 "历史教训"段：v2.1.1-2.1.7 漏 tag 教训
+
+### 回填
+- **git tag v2.1.2 / v2.1.3 / v2.1.4 / v2.1.5 / v2.1.6 / v2.1.7** 6 个 tag 全部补打 + push（不回填 release，按用户决策先修根因，下次 bump 自动）
+- **PROJECT_NOTES.md** §版本号流程注释明确："公开文档但本地不入仓"（避免误暴露异常数据现状）
+
 ## [2.1.7] - 2026-06-12
 
 ### 修复
