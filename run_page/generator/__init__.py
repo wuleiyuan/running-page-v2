@@ -5,7 +5,7 @@ import sys
 import arrow
 import stravalib
 from gpxtrackposter import track_loader
-from sqlalchemy import func, or_
+from sqlalchemy import and_, func, or_
 
 from polyline_processor import filter_out
 
@@ -130,10 +130,15 @@ class Generator:
     def load(self):
         # if sub_type is not in the db, just add an empty string to it
         # 2026-06-09 用户反馈：之前限定 type=Run 是当时只跑步，现在多运动，不做 type 限制
-        # distance > 0.1m 过滤空记录（上游一致）；爬楼（StairStepper）没距离走 OR 例外
+        # 2026-06-12 异常数据修复：
+        #   - distance > 0.1m 过滤空记录（上游一致）
+        #   - distance IS NOT NULL 防御 NULL（之前 OR 子句会让 NULL 行漏过滤）
+        #   - 爬楼（StairStepper）/ 跳绳（RopeSkipping）无距离走 OR 例外
+        #   - Workout 距离为 0 的 19 条（Keep API 漏 GPX）保留不删（用户决策：丢数据更糟）
+        #   - 0 距离 Run 在循环里二次过滤（误触发开始/取消 / Apple Watch 半路掉线）
         query = self.session.query(Activity).filter(
             or_(
-                Activity.distance > 0.1,
+                and_(Activity.distance > 0.1, Activity.distance.isnot(None)),
                 Activity.type == 'StairStepper',  # 爬楼无距离
                 Activity.type == 'RopeSkipping',  # 跳绳无距离
             )
@@ -146,7 +151,13 @@ class Generator:
 
         streak = 0
         last_date = None
+        skipped_zero_distance_runs = 0
         for activity in activities:
+            # 2026-06-12 异常数据修复：0 距离 Run 跳过（误触发 / 半路掉线）
+            # Workout 0 距离保留（Keep API 漏 GPX 但用户决策不删）
+            if activity.type == 'Run' and (activity.distance is None or activity.distance <= 0):
+                skipped_zero_distance_runs += 1
+                continue
             # Determine running streak.
             date = datetime.datetime.strptime(
                 activity.start_date_local, "%Y-%m-%d %H:%M:%S"  # type: ignore
@@ -166,6 +177,8 @@ class Generator:
                 activity.summary_polyline = filter_out(activity.summary_polyline)  # type: ignore
             activity_list.append(activity.to_dict())
 
+        if skipped_zero_distance_runs:
+            print(f"[generator.load] skipped {skipped_zero_distance_runs} zero-distance Run activities")
         return activity_list[::-1]
 
     def get_old_tracks_ids(self):
