@@ -11,6 +11,23 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.12] - 2026-06-12
+
+### 新增 (按用户强烈反馈：release 自动化 + 一次性回填)
+- **scripts/release.sh** 一键 bump + commit + tag + push + create release（用 curl + GitHub API，不依赖 gh CLI）
+- **scripts/backfill_releases.sh** 一次性回填历史 release entry（v2.1.2-2.1.11 共 10 个）
+- **PROJECT_NOTES.md** §版本号流程升级为 5 必做步（含 create release 必做）
+- **scripts/bump_version.sh** 标"已废弃"（新功能用 release.sh）
+
+### 用法
+```bash
+# 平时 bump
+GITHUB_TOKEN=*** ./scripts/release.sh patch
+
+# 回填历史 release（一次性）
+GITHUB_TOKEN=*** ./scripts/backfill_releases.sh v2.1.2 v2.1.3 v2.1.4 v2.1.5 v2.1.6 v2.1.7 v2.1.8 v2.1.9 v2.1.10 v2.1.11
+```
+
 ## [2.1.11] - 2026-06-12
 
 ### 修复 (色带塌陷根因 + 升级 sub)
