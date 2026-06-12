@@ -130,24 +130,31 @@ const AssessmentCard: React.FC<Props> = ({ card, trend, trendMax, acwrRatio }) =
               ACWR 风险区间（0-2.0）
             </div>
             <div className="acwr-zone-bar">
-              {ACWR_ZONES.map((z, i) => (
-                <div
-                  key={i}
-                  className="acwr-zone"
-                  style={{ backgroundColor: z.color, flex: z.max === 99 ? 0.5 : (z.max - z.min) }}
-                />
-              ))}
+              {ACWR_ZONES.map((z, i) => {
+                // flex 宽度按区间比例: 0-0.8 (0.8) / 0.8-1.3 (0.5) / 1.3-1.5 (0.2) / 1.5+ 截断到 2.0
+                const span = z.max === 99 ? 0.5 : (z.max - z.min);
+                return (
+                  <div
+                    key={i}
+                    className="acwr-zone"
+                    style={{ backgroundColor: z.color, flexGrow: span, flexBasis: 0 }}
+                  />
+                );
+              })}
             </div>
             <div className="acwr-zone-labels">
-              {ACWR_ZONES.map((z, i) => (
-                <span
-                  key={i}
-                  className="acwr-zone-label"
-                  style={{ color: z.color, flex: z.max === 99 ? 0.5 : (z.max - z.min) }}
-                >
-                  {z.min}-{z.max === 99 ? '∞' : z.max}
-                </span>
-              ))}
+              {ACWR_ZONES.map((z, i) => {
+                const span = z.max === 99 ? 0.5 : (z.max - z.min);
+                return (
+                  <span
+                    key={i}
+                    className="acwr-zone-label"
+                    style={{ color: z.color, flexGrow: span, flexBasis: 0 }}
+                  >
+                    {z.min}-{z.max === 99 ? '∞' : z.max}
+                  </span>
+                );
+              })}
             </div>
             <div className="acwr-position-wrap">
               <div
