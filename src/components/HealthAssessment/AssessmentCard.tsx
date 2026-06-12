@@ -71,6 +71,8 @@ const AssessmentCard: React.FC<Props> = ({ card }) => {
         style={{
           padding: '10px 12px',
           borderRadius: 6,
+          color: '#1a1a1a',
+          fontWeight: 500,
           backgroundColor:
             card.severity === 'good'
               ? 'rgba(76, 175, 80, 0.06)'

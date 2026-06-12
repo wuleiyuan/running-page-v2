@@ -197,7 +197,10 @@ function median(nums: (number | null | undefined)[]): number | null {
  * - 差值 > 7 bpm: 立即调整（感冒/过度训练/脱水）
  */
 function assessRHR(recent7: HealthStatsDaily[]): AssessmentCard {
-  const rhrValues = recent7.map((d) => d.rhr?.mean).filter((v): v is number => typeof v === 'number');
+  // 过滤异常值: RHR < 30 (数据缺失/手环未戴) 或 > 120 (异常高)
+  const rhrValues = recent7
+    .map((d) => d.rhr?.mean)
+    .filter((v): v is number => typeof v === 'number' && v >= 30 && v <= 120);
   const recentMean = mean(rhrValues);
   const baseline = HEALTH_STATS.top_stats.rhr.median;
 
@@ -248,7 +251,9 @@ function assessRHR(recent7: HealthStatsDaily[]): AssessmentCard {
  * 只能基于 top_stats + by_year 总体均值
  * 建议方向：若用户开了 HRV 记录，扩展 daily schema
  */
-function assessHRV(): AssessmentCard {
+function assessHRV(windowDays: 7 | 30): AssessmentCard {
+  // daily schema 暂未包含 hrv 字段,无法按 7/30 分窗口
+  // v2.1.6: 标注全量,提示 Apple Watch 开启 HRV 日级
   const mean = HEALTH_STATS.top_stats.hrv.mean_all;
   const days = HEALTH_STATS.top_stats.hrv.days_with_data;
 
@@ -257,23 +262,23 @@ function assessHRV(): AssessmentCard {
 
   if (mean > 50) {
     severity = 'good';
-    advice = 'HRV 较高，自主神经系统恢复能力良好。';
+    advice = `HRV ${mean.toFixed(1)} ms 处于较高水平,自主神经恢复能力良好(全量均值,基于 ${days} 天数据)。`;
   } else if (mean >= 30) {
     severity = 'watch';
-    advice = 'HRV 中等水平。建议关注睡眠质量与恢复时间。';
+    advice = `HRV ${mean.toFixed(1)} ms 处于中等水平(全量均值,基于 ${days} 天数据)。建议关注睡眠质量与恢复时间。开启 Apple Watch HRV 日级测量可获得 ${windowDays} 天精细评估。`;
   } else {
     severity = 'warn';
-    advice = 'HRV 偏低，恢复能力可能受限。考虑减少高强度训练。';
+    advice = `HRV ${mean.toFixed(1)} ms 偏低,恢复能力可能受限(全量均值,基于 ${days} 天数据)。考虑减少高强度训练,开启 Apple Watch HRV 日级测量以获得 ${windowDays} 天恢复追踪。`;
   }
 
   return {
     key: 'hrv',
     title: '心率变异性（HRV）',
     main: `${mean.toFixed(1)} ms`,
-    sub: `${days} 天均值`,
+    sub: `全量均值 · ${days} 天`,
     severity,
     advice,
-    detail: 'HRV 暂未提供日级别数据。评估基于总体均值。建议 Apple Watch 开启 HRV 测量以获得更精细的恢复建议。',
+    detail: 'HRV 暂未提供日级别数据,评估基于全量均值。建议在 Apple Watch "健康 App > 心脏 > HRV" 开启日级测量,以获得更精细的恢复建议。',
   };
 }
 
@@ -286,9 +291,10 @@ function assessHRV(): AssessmentCard {
  * - < 6h 或 > 10h: 警告
  */
 function assessSleep(recent7: HealthStatsDaily[]): AssessmentCard {
+  // 过滤异常值: < 1h (手环未戴/无数据) 或 > 14h (Apple Watch 充电/未摘表)
   const sleepHours = recent7
     .map((d) => d.sleep?.total_hours)
-    .filter((v): v is number => typeof v === 'number');
+    .filter((v): v is number => typeof v === 'number' && v >= 1 && v <= 14);
   const recentMedian = median(sleepHours);
   const baseline = HEALTH_STATS.top_stats.sleep.median_hours;
 
@@ -343,9 +349,10 @@ function assessSleep(recent7: HealthStatsDaily[]): AssessmentCard {
  * - < 4000: 久坐风险
  */
 function assessSteps(recent7: HealthStatsDaily[]): AssessmentCard {
+  // 过滤异常值: < 0 (不可能)
   const stepValues = recent7
     .map((d) => d.steps?.total)
-    .filter((v): v is number => typeof v === 'number');
+    .filter((v): v is number => typeof v === 'number' && v >= 0);
   const recentMean = mean(stepValues);
   const baseline = HEALTH_STATS.top_stats.steps.mean_daily;
 
@@ -488,7 +495,7 @@ export function assessHealth(opts: AssessOptions = {}): AssessmentBundle {
 
   const cards: AssessmentCard[] = [
     assessRHR(recent7),
-    assessHRV(),
+    assessHRV(windowDays),
     assessSleep(recent7),
     assessSteps(recent7),
     assessTrainingLoad(),

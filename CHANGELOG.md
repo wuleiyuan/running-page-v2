@@ -11,6 +11,16 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.6] - 2026-06-12
+
+### 修复
+- **assessHRV** 支持 7/30 天窗口 + 文案明确标注"全量均值"+ 提示开启 Apple Watch HRV 日级测量
+- **assessRHR** 过滤异常值（RHR < 30 数据缺失 / > 120 异常高）
+- **assessSleep** 过滤异常值（< 1h 手环未戴 / > 14h 未摘表）
+- **assessSteps** 过滤负值（防御性）
+- **AssessmentCard** advice 区块显式 `color: #1a1a1a` + `font-weight: 500` 修复亮底深字对比度
+- **style.module.css** `.switchBtn.active` 加 `font-weight: 600` + `box-shadow` 增强 7/30 切换高亮
+
 ## [2.1.5] - 2026-06-12
 
 ### 新增 (Minor)
