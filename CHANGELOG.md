@@ -8,8 +8,37 @@
 ## [未发布]
 
 ### 计划中
-- 运动健康评估建议模块（HealthAssessment）
+- 运动健康评估建议模块（HealthAssessment UI）
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
+
+## [2.1.4] - 2026-06-12
+
+### 新增 (Minor)
+- **运动类型显示维度重构**：根据运动语义，UI 不再统一显示距离
+  - `distance` (位移)：Run / Hiking / Walk / Ride / Swim / Elliptical / Skiing / Surfing / Wheelchair
+  - `count` (计数)：StairStepper / RopeSkipping / Boxing / Soccer / Basketball / Tennis / Golf
+  - `duration` (时长)：Strength / Core / Yoga / Workout
+  - 22 个 sportCompat 桶加 `displayMetric` + `unitLabel` 字段
+- **新增 `src/utils/activitiesDisplay.ts`**：
+  - `getDisplayMetric(activity)` 返回 `{label, value, subLabel, subValue, anomaly}`
+  - `aggregateDisplayMetric(activities[])` 批量聚合（sidebar / 主页用）
+  - 防御性异常检测：0 距离 + 长时长 / Run 速度 < 1 km/h / Run 速度 > 30 km/h
+- **新增 `src/utils/healthAssessment.ts`** (5 个评估函数 + 类型) — UI 留待 2.1.5
+- **新增单元测试** `src/utils/__tests__/activitiesDisplay.test.ts` (vitest 框架，下版本引入)
+- **异常数据视觉提示**：`RunRow.tsx` 加 `warning` / `error` 样式（黄/红左边框 + tooltip）
+
+### 修复 (Patch)
+- **异常数据 filter 加强** `run_page/generator/__init__.py`：
+  - Run 速度 < 1 km/h 持续 > 1h 跳过（卡死/误触发）
+  - Run 速度 > 30 km/h 持续 > 5min 跳过（接近短跑极限但持续不可能是跑步）
+  - 任意 type 0 距离 + 长时长（> 1h）跳过（数据损坏）
+  - 防御性 `_moving_time_to_seconds()` helper 支持 timedelta/str/无值
+  - 每次跑加 skipped 计数日志
+
+### UI 改动
+- `RunTable/RunRow.tsx`：第二列从 "距离" 改为 `display.value`（距离/次数/时长自适应）
+- `RunTable/style.module.css`：加 `.warning` / `.error` 样式
+- `sportCompat.ts`：22 桶加 `displayMetric` + `unitLabel`
 
 ## [2.1.3] - 2026-06-12
 

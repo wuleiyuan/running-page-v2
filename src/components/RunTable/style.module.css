@@ -98,3 +98,14 @@
 .runDate {
   color: var(--color-run-date);
 }
+
+/* 2026-06-12 异常数据视觉提示 */
+.runRow.warning {
+  background-color: rgba(255, 193, 7, 0.08) !important;
+  border-left: 3px solid #ffc107;
+}
+
+.runRow.error {
+  background-color: rgba(244, 67, 54, 0.08) !important;
+  border-left: 3px solid #f44336;
+}

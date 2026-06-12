@@ -13,6 +13,32 @@ from .db import Activity, init_db, update_or_create_activity
 
 from synced_data_file_logger import save_synced_data_file_list
 
+
+def _moving_time_to_seconds(moving_time) -> int:
+    """moving_time 格式：'1970-01-01 HH:MM:SS' 或 timedelta 或 None
+    返回总秒数，无法解析时返回 0。
+    """
+    if moving_time is None:
+        return 0
+    # datetime.timedelta
+    if isinstance(moving_time, datetime.timedelta):
+        return int(moving_time.total_seconds())
+    # str: '1970-01-01 HH:MM:SS' 或 'HH:MM:SS'
+    s = str(moving_time)
+    m = s.split()[-1] if ' ' in s else s
+    parts = m.split(':')
+    if len(parts) == 3:
+        try:
+            return int(parts[0]) * 3600 + int(parts[1]) * 60 + int(float(parts[2]))
+        except (ValueError, IndexError):
+            return 0
+    if len(parts) == 2:
+        try:
+            return int(parts[0]) * 60 + int(parts[1])
+        except (ValueError, IndexError):
+            return 0
+    return 0
+
 IGNORE_BEFORE_SAVING = os.getenv("IGNORE_BEFORE_SAVING", False)
 
 
@@ -152,12 +178,32 @@ class Generator:
         streak = 0
         last_date = None
         skipped_zero_distance_runs = 0
+        skipped_impossible_speed_runs = 0
+        skipped_long_zero_distance = 0
         for activity in activities:
             # 2026-06-12 异常数据修复：0 距离 Run 跳过（误触发 / 半路掉线）
             # Workout 0 距离保留（Keep API 漏 GPX 但用户决策不删）
             if activity.type == 'Run' and (activity.distance is None or activity.distance <= 0):
                 skipped_zero_distance_runs += 1
                 continue
+            # 2026-06-12 异常数据修复：0 距离 + 长时长（任意 type）跳过
+            # 距离为 0 但时长 > 1 小时 = 严重异常（Keep API 漏 GPX 极端情况 / 数据损坏）
+            if (activity.distance is None or activity.distance <= 0) and activity.moving_time:
+                mt_seconds = _moving_time_to_seconds(activity.moving_time)
+                if mt_seconds and mt_seconds > 3600:
+                    skipped_long_zero_distance += 1
+                    continue
+            # 2026-06-12 异常数据修复：Run 速度异常（< 1 km/h 或 > 30 km/h）跳过
+            # 慢于 1 km/h 持续 > 1h = 误触发 / 卡死；快于 30 km/h 持续 > 5min = 不可能是跑步
+            if activity.type == 'Run' and activity.distance and activity.moving_time:
+                mt_seconds = _moving_time_to_seconds(activity.moving_time)
+                if mt_seconds and mt_seconds > 60:  # 至少 1 分钟
+                    kmh = (activity.distance / 1000.0) / (mt_seconds / 3600.0)
+                    too_slow = kmh < 1.0 and mt_seconds > 3600  # < 1 km/h 持续 > 1h
+                    too_fast = kmh > 30.0 and mt_seconds > 300  # > 30 km/h 持续 > 5min
+                    if bool(too_slow) or bool(too_fast):
+                        skipped_impossible_speed_runs += 1
+                        continue
             # Determine running streak.
             date = datetime.datetime.strptime(
                 activity.start_date_local, "%Y-%m-%d %H:%M:%S"  # type: ignore
@@ -179,6 +225,10 @@ class Generator:
 
         if skipped_zero_distance_runs:
             print(f"[generator.load] skipped {skipped_zero_distance_runs} zero-distance Run activities")
+        if skipped_long_zero_distance:
+            print(f"[generator.load] skipped {skipped_long_zero_distance} long-duration zero-distance activities (any type)")
+        if skipped_impossible_speed_runs:
+            print(f"[generator.load] skipped {skipped_impossible_speed_runs} impossible-speed Run activities (< 1 km/h > 1h or > 30 km/h > 5min)")
         return activity_list[::-1]
 
     def get_old_tracks_ids(self):

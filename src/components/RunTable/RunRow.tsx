@@ -7,6 +7,7 @@ import {
 } from '@/utils/utils';
 import { SHOW_ELEVATION_GAIN } from '@/utils/const';
 import { M_TO_DIST, M_TO_ELEV } from '@/utils/utils';
+import { getDisplayMetric } from '@/utils/activitiesDisplay';
 import styles from './style.module.css';
 
 interface IRunRowProperties {
@@ -24,7 +25,12 @@ const RunRow = ({
   runIndex,
   setRunIndex,
 }: IRunRowProperties) => {
-  const distance = (run.distance / M_TO_DIST).toFixed(2);
+  // 2026-06-12: 用 activitiesDisplay 决定显示指标
+  // - distance 维度：距离 + 配速
+  // - count 维度：次数（如爬楼层数）+ 时长
+  // - duration 维度：时长 + 心率
+  const display = getDisplayMetric(run);
+  const distance = (run.distance / M_TO_DIST).toFixed(2); // 保留旧字段（向后兼容）
   const paceParts = run.average_speed ? formatPace(run.average_speed) : null;
   const heartRate = run.average_heartrate;
   const runTime = formatRunTime(run.moving_time);
@@ -40,12 +46,15 @@ const RunRow = ({
 
   return (
     <tr
-      className={`${styles.runRow} ${runIndex === elementIndex ? styles.selected : ''}`}
+      className={`${styles.runRow} ${runIndex === elementIndex ? styles.selected : ''} ${
+        display.anomaly ? styles[display.anomaly] || '' : ''
+      }`}
       key={run.start_date_local}
       onClick={handleClick}
+      title={display.anomalyReason || ''}
     >
       <td>{titleForRun(run)}</td>
-      <td>{distance}</td>
+      <td>{display.value}</td>
       {SHOW_ELEVATION_GAIN && (
         <td>{((run.elevation_gain ?? 0) * M_TO_ELEV).toFixed(1)}</td>
       )}

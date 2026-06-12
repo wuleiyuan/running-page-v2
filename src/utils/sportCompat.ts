@@ -34,6 +34,22 @@ export interface SportCompat {
   nameKeywords: RegExp[];
   /** 描述 */
   desc: string;
+  /**
+   * 主要显示指标 (2026-06-12 用户要求：不是所有运动都该显示距离)
+   * - distance: 有位移的运动 (Run / Ride / Hiking / Walk / Swim)
+   * - count:    计数型运动 (RopeSkipping 跳绳次数 / StairStepper 爬楼次数 / Tennis 网球挥拍)
+   * - duration: 时间型运动 (Workout 力量训练 / Yoga)
+   * - energy:   能量型运动 (无距离无计数，参考 kcal)
+   */
+  displayMetric: 'distance' | 'count' | 'duration' | 'energy';
+  /**
+   * 显示单位的 key（用于从 activity 对象读字段 + 格式化）
+   * - distance: activity.distance (m) → km
+   * - count:    activity.reps / activity.steps / activity.floors (优先 reps，没则 0)
+   * - duration: activity.moving_time → HH:MM:SS
+   * - energy:   activity.calories / activity.kcal
+   */
+  unitLabel: string;
 }
 
 /**
@@ -81,6 +97,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /^route\s+\d{4}/i, // Keep 通用名 "Route 2026-04-03 ..."（type=Run 但实际可能是其他）
     ],
     desc: '从街道到山野的每一步',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Hiking',
@@ -106,6 +124,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /hike\b/i,
     ],
     desc: '翻过的每一座山、踩过的每一条路',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Walk',
@@ -127,6 +147,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /徒步走/,
     ],
     desc: '日常的每一步',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Ride',
@@ -160,6 +182,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /山地车/,
     ],
     desc: '两轮上的距离',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Swim',
@@ -178,6 +202,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /游泳/,
     ],
     desc: '泳池里的每一米',
+    displayMetric: 'distance',
+    unitLabel: 'm',
   },
   // === 力量 / 器械 / 健身 ===
   {
@@ -205,6 +231,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /举重/,
     ],
     desc: '肌肉的每一下收缩',
+    displayMetric: 'duration',
+    unitLabel: 'min',
   },
   {
     key: 'Core',
@@ -228,6 +256,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /腹肌/,
     ],
     desc: '腰腹的稳定',
+    displayMetric: 'duration',
+    unitLabel: 'min',
   },
   {
     key: 'Yoga',
@@ -247,6 +277,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /太极/,
     ],
     desc: '身心合一的呼吸',
+    displayMetric: 'duration',
+    unitLabel: 'min',
   },
   // === 有氧器械 ===
   {
@@ -264,6 +296,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /椭圆机/,
     ],
     desc: '低冲击的有氧',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'StairStepper',
@@ -285,6 +319,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /楼梯/,
     ],
     desc: '一步步向上',
+    displayMetric: 'count',
+    unitLabel: '层',
   },
   {
     key: 'Rowing',
@@ -301,6 +337,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /划船/,
     ],
     desc: '拉桨的力量',
+    displayMetric: 'distance',
+    unitLabel: 'm',
   },
   // === 搏击 ===
   {
@@ -333,6 +371,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /击剑/,
     ],
     desc: '出拳的瞬间',
+    displayMetric: 'count',
+    unitLabel: '组',
   },
   {
     key: 'RopeSkipping',
@@ -353,6 +393,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /skipping/i,
     ],
     desc: '节奏感的燃脂',
+    displayMetric: 'count',
+    unitLabel: '次',
   },
   // === 球类 ===
   {
@@ -376,6 +418,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /橄榄球/,
     ],
     desc: '11 个人的默契',
+    displayMetric: 'count',
+    unitLabel: '次',
   },
   {
     key: 'Basketball',
@@ -395,6 +439,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /排球/,
     ],
     desc: '空心入网的清脆',
+    displayMetric: 'count',
+    unitLabel: '次',
   },
   {
     key: 'Tennis',
@@ -425,6 +471,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /匹克球/,
     ],
     desc: '挥拍的节奏',
+    displayMetric: 'count',
+    unitLabel: '次',
   },
   // === 极限 / 水上 / 雪上 ===
   {
@@ -452,6 +500,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /双板/,
     ],
     desc: '雪上的速度',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Surfing',
@@ -481,6 +531,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /赛艇/,
     ],
     desc: '浪尖的舞步',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Golf',
@@ -497,6 +549,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /高尔夫/,
     ],
     desc: '一杆进洞的优雅',
+    displayMetric: 'count',
+    unitLabel: '洞',
   },
   // === 其它 ===
   {
@@ -514,6 +568,8 @@ export const SPORT_COMPAT: SportCompat[] = [
       /轮椅/,
     ],
     desc: '无障碍的运动',
+    displayMetric: 'distance',
+    unitLabel: 'km',
   },
   {
     key: 'Other',
@@ -525,6 +581,8 @@ export const SPORT_COMPAT: SportCompat[] = [
     typeMatches: [],
     nameKeywords: [],
     desc: '其他运动记录',
+    displayMetric: 'duration',
+    unitLabel: 'min',
   },
 ];
 
