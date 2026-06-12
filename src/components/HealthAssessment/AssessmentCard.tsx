@@ -131,35 +131,58 @@ const AssessmentCard: React.FC<Props> = ({ card, trend, trendMax, acwrRatio }) =
             </div>
             <div className="acwr-zone-bar">
               {ACWR_ZONES.map((z, i) => {
-                // flex 宽度按区间比例: 0-0.8 (0.8) / 0.8-1.3 (0.5) / 1.3-1.5 (0.2) / 1.5+ 截断到 2.0
+                // width 百分比: 紫 0-0.8 (40%) / 绿 0.8-1.3 (25%) / 橙 1.3-1.5 (10%) / 蓝 1.5+ (25%)
+                const TOTAL_SPAN = 0.8 + 0.5 + 0.2 + 0.5; // = 2.0
                 const span = z.max === 99 ? 0.5 : (z.max - z.min);
+                const widthPct = (span / TOTAL_SPAN) * 100;
                 return (
                   <div
                     key={i}
                     className="acwr-zone"
-                    style={{ backgroundColor: z.color, flexGrow: span, flexBasis: 0 }}
+                    style={{ backgroundColor: z.color, width: `${widthPct}%` }}
                   />
                 );
               })}
             </div>
             <div className="acwr-zone-labels">
               {ACWR_ZONES.map((z, i) => {
+                const TOTAL_SPAN = 0.8 + 0.5 + 0.2 + 0.5;
                 const span = z.max === 99 ? 0.5 : (z.max - z.min);
+                const widthPct = (span / TOTAL_SPAN) * 100;
                 return (
                   <span
                     key={i}
                     className="acwr-zone-label"
-                    style={{ color: z.color, flexGrow: span, flexBasis: 0 }}
+                    style={{ color: z.color, width: `${widthPct}%` }}
                   >
                     {z.min}-{z.max === 99 ? '∞' : z.max}
                   </span>
                 );
               })}
             </div>
-            <div className="acwr-position-wrap">
+            <div
+              className="acwr-marker-wrap"
+              style={{
+                position: 'relative',
+                height: 14,
+                margin: '6px 0 10px',
+                borderTop: '1px dashed rgba(0,0,0,0.08)',
+              }}
+            >
               <div
-                className="acwr-position-dot"
-                style={{ left: `${acwrPercent}%`, borderColor: zone.color, backgroundColor: zone.color }}
+                className="acwr-marker-dot"
+                style={{
+                  position: 'absolute',
+                  left: `${acwrPercent}%`,
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: 14,
+                  height: 14,
+                  borderRadius: '50%',
+                  backgroundColor: zone.color,
+                  border: '2px solid #fff',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
+                }}
                 title={`ACWR = ${acwrRatio.toFixed(2)}`}
               />
             </div>

@@ -11,6 +11,15 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.1.11] - 2026-06-12
+
+### 修复 (色带塌陷根因 + 升级 sub)
+- **AssessmentCard.tsx** 色带 `flexGrow + flexBasis: 0` 浏览器渲染塌陷 → 改用 `width: ${pct}%` 百分比（v2.1.10 修复失败根因）
+- **AssessmentCard.tsx** 色带标签同步改 width 百分比
+- **AssessmentCard.tsx** 位置圆点改用 inline style（position absolute + left % + 14px 圆点）—— 摆脱 .acwr-position-* CSS 依赖
+- **healthAssessment.ts** sub 升级为急性/慢性双显示：`急性 X TRIMP · 慢性 Y TRIMP/天`（替代原"近 7 天 X · 4 周均 Y"）
+- ACWR 色带比例：紫 0-0.8 (40%) / 绿 0.8-1.3 (25%) / 橙 1.3-1.5 (10%) / 蓝 1.5+ (25%)
+
 ## [2.1.10] - 2026-06-12
 
 ### 修复 (按用户截图反馈)

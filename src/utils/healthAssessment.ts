@@ -510,7 +510,7 @@ function assessTrainingLoad(): TrainingLoadResult {
       key: 'training_load',
       title: '训练负荷（ACWR / TRIMP）',
       main: ratio > 0 ? ratio.toFixed(2) : '—',
-      sub: `近 7 天 ${acute7d.toFixed(0)} TRIMP · 4 周均 ${chronic28d.toFixed(0)} TRIMP/周`,
+      sub: `急性 ${acute7d.toFixed(0)} TRIMP · 慢性 ${(chronic28d / 7).toFixed(0)} TRIMP/天`,
       severity,
       advice,
     },
