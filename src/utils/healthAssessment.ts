@@ -591,6 +591,10 @@ export interface AIGuidanceResponse {
   usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
   generatedAt?: string;
   error?: string;
+  /** v2.2.1: 调试用 requestId */
+  requestId?: string;
+  /** v2.2.1: 错误时给前端的修复建议 */
+  hint?: string;
 }
 
 /**

@@ -1,13 +1,13 @@
 # Sports Fair - 运动集市
 
-> **Version: 2.1.12** · [Releases](https://github.com/wuleiyuan/sports-fair/releases) · [Changelog](CHANGELOG.md)
+> **Version: 2.2.1** · [Releases](https://github.com/wuleiyuan/sports-fair/releases) · [Changelog](CHANGELOG.md)
 > **GitHub Repository**: [wuleiyuan/sports-fair](https://github.com/wuleiyuan/sports-fair)
 > **Live Demo**: [https://sports-fair.vercel.app](https://sports-fair.vercel.app)
 > **Deploy Status**: ![Vercel](https://img.shields.io/badge/Vercel-Live-brightgreen)
 >
 > Forked from [yihong0618/running_page](https://github.com/yihong0618/running_page).
 >
-> **Recent Updates (2026-06-12)**:
+> **Recent Updates (2026-06-13)**:
 > - **Health Assessment Module** (v2.1.5-2.1.11): 5-dimension health evaluation (RHR / HRV / Sleep / Steps / Training Load) with ACWR + TRIMP algorithm
 > - **Anomaly Data Filter** (v2.1.3-2.1.4): Skip 0-distance + abnormal-speed activities
 > - **Sport Type Compatibility** (v2.1.4): Distance / count / duration display per sport
@@ -239,6 +239,63 @@ When using **"mapbox"**, **"maptiler"** or **"stadiamaps"**, you must configure 
 - **Mapbox**: Register at [https://www.mapbox.com/](https://www.mapbox.com/) (Has usage costs)
 - **MapTiler**: Register at [https://cloud.maptiler.com/auth/widget](https://cloud.maptiler.com/auth/widget) (Free tier available)
 - **Stadia Maps**: Sign up at [https://client.stadiamaps.com/signup/](https://client.stadiamaps.com/signup/) (Free tier available)
+
+## AI Health Assessment (LLM) — v2.2.0+
+
+The `/health-assess` page uses an LLM to generate **personalized coaching advice** based on your Apple HealthKit + training data. Three providers are supported and switchable at deploy time.
+
+### 1. Configure Provider in Vercel Dashboard
+
+Go to **Vercel Project → Settings → Environment Variables**, add:
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `LLM_PROVIDER` | No | `mimo` | `mimo` / `openai` / `anthropic` |
+| `MIMO_API_KEY` | If provider=mimo | — | 小米 MiMo key (e.g. `sk-ccb...`) |
+| `OPENAI_API_KEY` | If provider=openai | — | OpenAI key (e.g. `sk-proj-...`) |
+| `ANTHROPIC_API_KEY` | If provider=anthropic | — | Anthropic key (e.g. `sk-ant-...`) |
+| `MIMO_MODEL` | No | `mimo-v2-flash` | MiMo model override |
+| `OPENAI_MODEL` | No | `gpt-4o-mini` | OpenAI model override |
+| `ANTHROPIC_MODEL` | No | `claude-haiku-4-5` | Anthropic model override |
+
+> **Note**: Vercel dashboard `Environment` selector (Production / Preview / Development) controls scope. Set **Production** for your live site.
+
+### 2. Provider-Specific Setup
+
+#### MiMo (小米, default)
+- Register: [https://api.xiaomimimo.com](https://api.xiaomimimo.com)
+- Free tier available, OpenAI-compatible API
+- Models: `mimo-v2-flash` (fast/cheap), `mimo-v2-pro` (better), `mimo-v2.5-pro` (best)
+
+#### OpenAI
+- Register: [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+- Pay-as-you-go
+- Recommended: `gpt-4o-mini` (cheapest, good enough for structured JSON-ish advice)
+
+#### Anthropic
+- Register: [https://console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys)
+- Pay-as-you-go
+- Recommended: `claude-haiku-4-5` (fast, cheap)
+
+### 3. Switching Providers at Runtime (UI)
+
+Users can switch providers in the UI by clicking the pill buttons (MiMo / OpenAI / Anthropic) on `/health-assess`. The selection sends the provider name to the backend, which honors it if the corresponding key is configured. If not, it falls back to `LLM_PROVIDER` env, then errors gracefully to the static advice.
+
+### 4. Adding a New Provider
+
+Edit `api/providers/llm.ts`:
+
+1. Add a new `ProviderName` literal (e.g. `'deepseek'`)
+2. Implement a `createXxxProvider()` factory (see `createMimoProvider` for the OpenAI-compatible pattern, `createAnthropicProvider` for the custom-format pattern)
+3. Add a case in `buildProvider()` switch
+
+The handler `api/assess-ai.ts` requires no changes.
+
+### 5. Cost & Rate Limit Tips
+
+- **CDN cache** is set to 60s (`s-maxage=60`), so identical requests within 60s hit cache (free)
+- **Switching windows** (7d ↔ 30d) triggers a new LLM call — design UI to be sticky
+- **Production users see ~1-2 calls/session**, very cheap on flash-tier models
 
 ## Custom your page
 

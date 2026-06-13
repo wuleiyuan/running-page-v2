@@ -65,6 +65,28 @@ LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
+## [2.2.2] - 2026-06-13
+
+### 新增 (可观察性 + 安全加固)
+- **`/api/health-check` GET 端点**: 用户自查 LLM provider 配置状态
+  - 返回 `activeProvider` / `activeReady` / `providers[]` 状态表
+  - 不暴露 key 内容, 只暴露 hasKey 布尔
+  - 失败时给 hint: "Active provider mimo missing MIMO_API_KEY"
+- **错误响应加 `requestId` + `hint` 字段** (assess-ai.ts)
+  - 每次请求生成 UUID, 通过响应头 `X-Request-Id` 和 body 字段返回
+  - 失败时给用户可读 hint, 引导到 health-check 端点
+  - 服务端 console.error 也带 requestId, 方便 dashboard log 关联
+- **前端错误展示升级** (health-assess.tsx)
+  - 显示短 requestId (前 8 位), 用户可贴给开发
+  - 显示服务端 hint
+  - "查看 AI 配置状态 →" 链接到 /api/health-check
+- **Prompt injection 防御** (assess-ai.ts)
+  - sanitize() 函数: 字段截断 200 字符 + 过滤 `ignore previous` / `system:` 等敏感 pattern
+  - cards 数组限制最多 10 张
+  - trainingLoadTrend 限制最多 30 个, 非数字替换为 0
+  - 单用户应用下主要是防恶意 prompt 浪费 token, 不防 data exfil
+- **README LLM 配置章节**: 完整 env 变量表 + 3 家 provider 注册链接 + 加新 provider 步骤
+
 ## [2.1.13] - 2026-06-12
 
 ### 新增 (按用户强烈反馈：标准 GitHub 流程)

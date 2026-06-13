@@ -153,7 +153,19 @@ const HealthAssessPage: React.FC = () => {
             <>
               <p className={styles.overallText}>{bundle.overall}</p>
               <p className={styles.aiFallback}>
-                （AI 建议暂不可用：{aiResponse?.error || '未知错误'}，已显示静态建议）
+                （AI 建议暂不可用
+                {aiResponse?.requestId && <code className={styles.requestId}> [{aiResponse.requestId.slice(0, 8)}]</code>}
+                ：{aiResponse?.error || '未知错误'}，已显示静态建议）
+              </p>
+              {aiResponse?.hint && (
+                <p className={styles.aiHint}>
+                  💡 {aiResponse.hint}
+                </p>
+              )}
+              <p className={styles.aiCheckLink}>
+                <a href="/api/health-check" target="_blank" rel="noopener noreferrer">
+                  查看 AI 配置状态 →
+                </a>
               </p>
             </>
           )}

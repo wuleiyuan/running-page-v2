@@ -253,6 +253,38 @@
   font-style: italic;
 }
 
+.requestId {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 0.7rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-style: normal;
+  color: var(--color-text-secondary, #666);
+}
+
+.aiHint {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #666);
+  font-style: normal;
+}
+
+.aiCheckLink {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+}
+
+.aiCheckLink a {
+  color: var(--color-primary, #6366f1);
+  text-decoration: none;
+}
+
+.aiCheckLink a:hover {
+  text-decoration: underline;
+}
+
 /* v2.2.1: LLM provider 切换器 */
 .providerSwitcher {
   display: flex;
