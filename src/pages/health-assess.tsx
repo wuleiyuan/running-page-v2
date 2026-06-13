@@ -8,23 +8,34 @@ import {
   fetchAIGuidance,
   type AssessmentBundle,
   type AIGuidanceResponse,
+  type LLMProvider,
 } from '@/utils/healthAssessment';
 import styles from './style.module.css';
 
 /**
  * 运动健康评估建议页 (2026-06-12)
  * v2.2.0: 接入 LLM (MiMo) 替换静态 overall 建议
+ * v2.2.1: 支持 LLM provider 切换 (mimo / openai / anthropic)
  *
  * 路由: /health-assess
  * 数据源: health_stats.json (Apple HealthKit) + activities.json (运动记录)
- * AI 源: /api/assess-ai (Vercel Function → MiMo)
+ * AI 源: /api/assess-ai (Vercel Function → LLM Provider)
  *
  * 不做医学判断（声明）
  * 数据局限: HRV 暂未提供日级别，训练负荷仅用 moving_time 估算
  */
+const PROVIDER_LABELS: Record<LLMProvider, string> = {
+  mimo: 'MiMo (小米)',
+  openai: 'OpenAI',
+  anthropic: 'Anthropic',
+};
+
 const HealthAssessPage: React.FC = () => {
   const { theme } = useTheme();
   const [windowDays, setWindowDays] = useState<7 | 30>(7);
+
+  // v2.2.1: LLM provider 切换 (默认 mimo)
+  const [provider, setProvider] = useState<LLMProvider>('mimo');
 
   // v2.2.0: AI 建议状态
   const [aiState, setAiState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
@@ -40,13 +51,13 @@ const HealthAssessPage: React.FC = () => {
     [windowDays]
   );
 
-  // v2.2.0: bundle 变就拉 AI 建议
+  // v2.2.0: bundle 或 provider 变就拉 AI 建议
   useEffect(() => {
     let cancelled = false;
     setAiState('loading');
     setAiResponse(null);
 
-    fetchAIGuidance(bundle).then((resp) => {
+    fetchAIGuidance(bundle, { provider }).then((resp) => {
       if (cancelled) return;
       setAiResponse(resp);
       if (resp.aiGuidance) {
@@ -59,7 +70,7 @@ const HealthAssessPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [bundle]);
+  }, [bundle, provider]);
 
   return (
     <Layout>
@@ -92,6 +103,21 @@ const HealthAssessPage: React.FC = () => {
           </button>
         </div>
 
+        {/* v2.2.1: LLM provider 切换器 */}
+        <div className={styles.providerSwitcher}>
+          <span className={styles.providerLabel}>AI 模型：</span>
+          {(Object.keys(PROVIDER_LABELS) as LLMProvider[]).map((p) => (
+            <button
+              key={p}
+              className={`${styles.providerBtn} ${provider === p ? styles.active : ''}`}
+              onClick={() => setProvider(p)}
+              title={`使用 ${PROVIDER_LABELS[p]} 生成建议`}
+            >
+              {PROVIDER_LABELS[p]}
+            </button>
+          ))}
+        </div>
+
         {/* 综合建议 (v2.2.0: 优先显示 LLM 个性化建议) */}
         <section className={styles.overallSection}>
           <div className={styles.overallHeader}>
@@ -99,8 +125,11 @@ const HealthAssessPage: React.FC = () => {
               {aiState === 'ok' ? '🤖 AI 个性化建议' : '综合建议'}
             </h2>
             {aiState === 'ok' && aiResponse?.model && (
-              <span className={styles.aiBadge}>
-                {aiResponse.model}
+              <span
+                className={styles.aiBadge}
+                title={`由 ${PROVIDER_LABELS[aiResponse.provider ?? 'mimo']} 提供`}
+              >
+                {PROVIDER_LABELS[aiResponse.provider ?? 'mimo']} · {aiResponse.model}
               </span>
             )}
           </div>

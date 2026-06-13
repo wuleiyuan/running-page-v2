@@ -253,6 +253,43 @@
   font-style: italic;
 }
 
+/* v2.2.1: LLM provider 切换器 */
+.providerSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.providerLabel {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #666);
+  margin-right: 4px;
+}
+
+.providerBtn {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+  background: transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  color: var(--color-text-secondary, #666);
+  transition: all 0.15s ease;
+}
+
+.providerBtn:hover {
+  border-color: var(--color-primary, #6366f1);
+  color: var(--color-primary, #6366f1);
+}
+
+.providerBtn.active {
+  background: var(--color-primary, #6366f1);
+  border-color: var(--color-primary, #6366f1);
+  color: #fff;
+}
+
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

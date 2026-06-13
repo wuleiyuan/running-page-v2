@@ -576,11 +576,18 @@ export function assessHealth(opts: AssessOptions = {}): AssessmentBundle {
 // ==================== v2.2.0 LLM 增强 ====================
 
 /**
+ * v2.2.1: 支持多 LLM provider 切换
+ */
+export type LLMProvider = 'mimo' | 'openai' | 'anthropic';
+
+/**
  * AI 建议接口响应
  */
 export interface AIGuidanceResponse {
   aiGuidance: string | null;
   model?: string;
+  /** v2.2.1: provider 标识 */
+  provider?: LLMProvider;
   usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
   generatedAt?: string;
   error?: string;
@@ -592,8 +599,12 @@ export interface AIGuidanceResponse {
  * - 超时 12s（前端耐心阈值）
  * - 失败返回 { aiGuidance: null, error }，不抛
  * - 自动推断 endpoint：window.location.origin + /api/assess-ai
+ * - v2.2.1: 可选传 provider，不传则后端用 env LLM_PROVIDER
  */
-export async function fetchAIGuidance(bundle: AssessmentBundle): Promise<AIGuidanceResponse> {
+export async function fetchAIGuidance(
+  bundle: AssessmentBundle,
+  options?: { provider?: LLMProvider }
+): Promise<AIGuidanceResponse> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
 
@@ -611,6 +622,7 @@ export async function fetchAIGuidance(bundle: AssessmentBundle): Promise<AIGuida
         advice: c.advice,
       })),
       trainingLoadTrend: bundle.trainingLoadTrend,
+      ...(options?.provider && { provider: options.provider }),
     };
 
     const resp = await fetch('/api/assess-ai', {

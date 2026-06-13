@@ -1,23 +1,21 @@
 /**
- * v2.2.0 — AI 个性化健康建议 (Vercel Edge Function)
+ * v2.2.1 — AI 个性化健康建议 (Vercel Function)
  *
- * 流程：
- *   前端 health-assess.tsx 传入 7/30 天的评估结果
- *   → 本函数拼装 prompt → 调 MiMo (api.xiaomimimo.com) → 返回 AI 建议
+ * v2.2.0: 直接调 MiMo
+ * v2.2.1: 接入 LLM Provider 抽象层 (api/providers/llm.ts)
+ *          - 支持 mimo / openai / anthropic 三家
+ *          - 切换方式: Vercel env `LLM_PROVIDER=openai` (默认 mimo)
+ *          - 配对应 key: MIMO_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY
  *
  * 设计原则：
- *   1. Key 从 process.env.MIMO_API_KEY 读，不入代码不入日志
- *   2. 设置 10s 短超时（避免慢响应拖垮页面）
- *   3. MiMo 失败时返回 { aiGuidance: null, error }，前端降级到 bundle.overall
- *   4. 60 秒 Edge Cache 兜底（同窗口同日不重复调 LLM）
- *   5. 模型默认 mimo-v2-flash（性价比）；可通过 env MIMO_MODEL 覆盖
- *
- * 环境变量（Vercel dashboard 配置）:
- *   - MIMO_API_KEY   (必填)
- *   - MIMO_MODEL     (可选, 默认 mimo-v2-flash)
- *   - MIMO_BASE_URL  (可选, 默认 https://api.xiaomimimo.com/v1)
+ *   1. Key 全部从 process.env.* 读，不入代码不入日志
+ *   2. provider 切换不改 handler
+ *   3. 失败返回 { aiGuidance: null, error }，前端降级到 bundle.overall
+ *   4. 60s Edge Cache 兜底（同 windowDays 命中）
+ *   5. 启动时校验 provider 配置，错时直接 500 暴露（避免静默失败）
  */
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { buildProvider, type LLMMessage, type ProviderName } from './providers/llm';
 
 interface AssessCardSummary {
   key: string;
@@ -34,13 +32,11 @@ interface RequestBody {
   cards: AssessCardSummary[];
   /** 训练负荷 7 天每日 TRIMP 趋势（可选） */
   trainingLoadTrend?: number[];
+  /** v2.2.1: 前端可选指定 provider（不传则用 env LLM_PROVIDER） */
+  provider?: ProviderName;
 }
 
-const MIMO_BASE_URL = process.env.MIMO_BASE_URL || 'https://api.xiaomimimo.com/v1';
-const MIMO_MODEL = process.env.MIMO_MODEL || 'mimo-v2-flash';
-const TIMEOUT_MS = 10_000;
-
-function buildPrompt(body: RequestBody): { system: string; user: string } {
+function buildPrompt(body: RequestBody): LLMMessage[] {
   const { windowDays, overall, cards, trainingLoadTrend } = body;
 
   const cardsText = cards
@@ -50,9 +46,10 @@ function buildPrompt(body: RequestBody): { system: string; user: string } {
     })
     .join('\n');
 
-  const trendText = trainingLoadTrend && trainingLoadTrend.length > 0
-    ? `\n近 7 天每日训练负荷 (TRIMP)：${trainingLoadTrend.map((v) => v.toFixed(0)).join(', ')}`
-    : '';
+  const trendText =
+    trainingLoadTrend && trainingLoadTrend.length > 0
+      ? `\n近 7 天每日训练负荷 (TRIMP)：${trainingLoadTrend.map((v) => v.toFixed(0)).join(', ')}`
+      : '';
 
   const system = `你是一位经验丰富的运动健康教练 + 数据分析师，专长是基于用户的近期健康指标和训练记录，给出**个性化、可执行、有温度**的建议。
 
@@ -74,53 +71,10 @@ ${cardsText}${trendText}
 
 请基于以上数据，给这位用户的 AI 个性化建议。`;
 
-  return { system, user };
-}
-
-async function callMiMo(prompt: { system: string; user: string }): Promise<{
-  content: string;
-  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
-}> {
-  const apiKey = process.env.MIMO_API_KEY;
-  if (!apiKey) {
-    throw new Error('MIMO_API_KEY not configured');
-  }
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
-
-  try {
-    const resp = await fetch(`${MIMO_BASE_URL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: MIMO_MODEL,
-        messages: [
-          { role: 'system', content: prompt.system },
-          { role: 'user', content: prompt.user },
-        ],
-        temperature: 0.7,
-        max_tokens: 400,
-      }),
-      signal: controller.signal,
-    });
-
-    if (!resp.ok) {
-      const errText = await resp.text();
-      throw new Error(`MiMo HTTP ${resp.status}: ${errText.slice(0, 200)}`);
-    }
-
-    const data = await resp.json();
-    return {
-      content: data.choices?.[0]?.message?.content?.trim() || '',
-      usage: data.usage,
-    };
-  } finally {
-    clearTimeout(timeout);
-  }
+  return [
+    { role: 'system', content: system },
+    { role: 'user', content: user },
+  ];
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -138,7 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const body = (req.body || {}) as RequestBody;
 
-  // 简单校验
+  // 校验
   if (!body.cards || !Array.isArray(body.cards) || body.cards.length === 0) {
     return res.status(400).json({ error: 'cards required' });
   }
@@ -146,31 +100,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'windowDays must be 7 or 30' });
   }
 
-  // 60s 缓存（Edge cache，相同 windowDays 命中）
+  // 60s CDN cache
   res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=60, stale-while-revalidate=300');
 
-  const prompt = buildPrompt(body);
-
+  // 构建 provider
+  let provider;
   try {
-    const result = await callMiMo(prompt);
+    provider = buildProvider({ providerName: body.provider });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[assess-ai] Provider init failed:', msg);
+    return res.status(500).json({
+      aiGuidance: null,
+      error: msg,
+      hint: 'Set LLM_PROVIDER env + the corresponding API key (MIMO_API_KEY / OPENAI_API_KEY / ANTHROPIC_API_KEY)',
+    });
+  }
+
+  // 调 LLM
+  try {
+    const result = await provider.call({
+      messages: buildPrompt(body),
+      temperature: 0.7,
+      maxTokens: 400,
+      timeoutMs: 10_000,
+    });
+
     if (!result.content) {
       return res.status(502).json({
         aiGuidance: null,
-        error: 'MiMo returned empty content',
+        error: 'LLM returned empty content',
+        provider: provider.name,
       });
     }
+
     return res.status(200).json({
       aiGuidance: result.content,
-      model: MIMO_MODEL,
+      model: result.model,
+      provider: result.provider,
       usage: result.usage,
       generatedAt: new Date().toISOString(),
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('[assess-ai] MiMo call failed:', msg);
+    console.error('[assess-ai] LLM call failed:', msg);
     return res.status(502).json({
       aiGuidance: null,
       error: msg,
+      provider: provider.name,
     });
   }
 }

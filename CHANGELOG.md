@@ -33,6 +33,38 @@
 ### 待用户配置
 - Vercel dashboard → Project → Settings → Environment Variables 加 `MIMO_API_KEY`
 
+## [2.2.1] - 2026-06-13
+
+### 新增 (按用户 6/13 反馈: "api 到时候可以更换")
+- **LLM Provider 抽象层** `api/providers/llm.ts`
+  - 三家实现: **mimo** (默认, 小米 MiMo) / **openai** (gpt-4o-mini 等) / **anthropic** (claude-haiku 等)
+  - 切换只改环境变量 `LLM_PROVIDER=openai` + 配对应 `OPENAI_API_KEY`
+  - 加新 provider = 加 1 个 factory 函数 + 登记 `PROVIDERS`, handler 不动
+- **前端 Provider 切换器** (健康评估页)
+  - 三个 pill 按钮: MiMo / OpenAI / Anthropic
+  - 切换自动重拉, 徽章显示 "Provider · model"
+  - 前端传 `provider` 字段, 后端尊重请求 (fallback 到 env LLM_PROVIDER)
+- **Anthropic 适配**: 处理 Messages API 与 OpenAI Chat Completions 的格式差
+  (system 单独字段, `x-api-key` header, usage 字段 rename)
+
+### 重构
+- `api/assess-ai.ts` 从直接调 MiMo 改为走 `buildProvider()` 工厂
+- `fetchAIGuidance()` 加可选 `options.provider` 参数
+
+### 配置示例 (Vercel env)
+```
+LLM_PROVIDER=mimo
+MIMO_API_KEY=sk-...
+
+# 或换 OpenAI
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+
+# 或换 Anthropic
+LLM_PROVIDER=anthropic
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
 ## [2.1.13] - 2026-06-12
 
 ### 新增 (按用户强烈反馈：标准 GitHub 流程)
