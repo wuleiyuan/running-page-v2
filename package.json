@@ -1,7 +1,7 @@
 {
   "name": "sports-fair",
   "description": "Sports Fair - 运动集市：通用的运动数据可视化仪表盘，支持 Keep / Apple Health / Garmin / Strava 等多数据源。",
-  "version": "2.1.13",
+  "version": "2.2.0",
   "author": "wuleiyuan (forked from yihong0618/running_page)",
   "packageManager": "pnpm@8.9.0+sha256.8f5264ad1d100da11a6add6bb8a94c6f1e913f9e9261b2a551fabefad2ec0fec",
   "dependencies": {
