@@ -3,14 +3,21 @@ import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import { useTheme } from '@/hooks/useTheme';
 import AssessmentCard from '@/components/HealthAssessment/AssessmentCard';
-import { assessHealth, type AssessmentBundle } from '@/utils/healthAssessment';
+import {
+  assessHealth,
+  fetchAIGuidance,
+  type AssessmentBundle,
+  type AIGuidanceResponse,
+} from '@/utils/healthAssessment';
 import styles from './style.module.css';
 
 /**
  * 运动健康评估建议页 (2026-06-12)
+ * v2.2.0: 接入 LLM (MiMo) 替换静态 overall 建议
  *
  * 路由: /health-assess
  * 数据源: health_stats.json (Apple HealthKit) + activities.json (运动记录)
+ * AI 源: /api/assess-ai (Vercel Function → MiMo)
  *
  * 不做医学判断（声明）
  * 数据局限: HRV 暂未提供日级别，训练负荷仅用 moving_time 估算
@@ -18,6 +25,10 @@ import styles from './style.module.css';
 const HealthAssessPage: React.FC = () => {
   const { theme } = useTheme();
   const [windowDays, setWindowDays] = useState<7 | 30>(7);
+
+  // v2.2.0: AI 建议状态
+  const [aiState, setAiState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
+  const [aiResponse, setAiResponse] = useState<AIGuidanceResponse | null>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -28,6 +39,27 @@ const HealthAssessPage: React.FC = () => {
     () => assessHealth({ windowDays }),
     [windowDays]
   );
+
+  // v2.2.0: bundle 变就拉 AI 建议
+  useEffect(() => {
+    let cancelled = false;
+    setAiState('loading');
+    setAiResponse(null);
+
+    fetchAIGuidance(bundle).then((resp) => {
+      if (cancelled) return;
+      setAiResponse(resp);
+      if (resp.aiGuidance) {
+        setAiState('ok');
+      } else {
+        setAiState('error');
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [bundle]);
 
   return (
     <Layout>
@@ -60,10 +92,42 @@ const HealthAssessPage: React.FC = () => {
           </button>
         </div>
 
-        {/* 综合建议 */}
+        {/* 综合建议 (v2.2.0: 优先显示 LLM 个性化建议) */}
         <section className={styles.overallSection}>
-          <h2>综合建议</h2>
-          <p className={styles.overallText}>{bundle.overall}</p>
+          <div className={styles.overallHeader}>
+            <h2>
+              {aiState === 'ok' ? '🤖 AI 个性化建议' : '综合建议'}
+            </h2>
+            {aiState === 'ok' && aiResponse?.model && (
+              <span className={styles.aiBadge}>
+                {aiResponse.model}
+              </span>
+            )}
+          </div>
+          {aiState === 'loading' && (
+            <p className={styles.overallText}>
+              <span className={styles.aiLoading}>
+                <span className={styles.dotPulse} /> AI 教练正在分析你的数据…
+              </span>
+            </p>
+          )}
+          {aiState === 'ok' && aiResponse?.aiGuidance && (
+            <div className={styles.overallText}>
+              {aiResponse.aiGuidance.split('\n').map((line, i) => (
+                <p key={i} style={{ margin: i === 0 ? 0 : '0.5em 0 0' }}>
+                  {line}
+                </p>
+              ))}
+            </div>
+          )}
+          {aiState === 'error' && (
+            <>
+              <p className={styles.overallText}>{bundle.overall}</p>
+              <p className={styles.aiFallback}>
+                （AI 建议暂不可用：{aiResponse?.error || '未知错误'}，已显示静态建议）
+              </p>
+            </>
+          )}
         </section>
 
         {/* 评估卡片网格 */}
