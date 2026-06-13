@@ -604,16 +604,53 @@ export interface AIGuidanceResponse {
  * - 失败返回 { aiGuidance: null, error }，不抛
  * - 自动推断 endpoint：window.location.origin + /api/assess-ai
  * - v2.2.1: 可选传 provider，不传则后端用 env LLM_PROVIDER
+ * - v2.2.3: 自动重试 1 次（502/网络错时）, 内部对空 aiGuidance 也归类为 error
  */
 export async function fetchAIGuidance(
   bundle: AssessmentBundle,
-  options?: { provider?: LLMProvider }
+  options?: { provider?: LLMProvider; retries?: number }
+): Promise<AIGuidanceResponse> {
+  const maxRetries = options?.retries ?? 1;
+  let lastResult: AIGuidanceResponse | null = null;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const result = await fetchAIGuidanceOnce(bundle, options?.provider);
+    lastResult = result;
+
+    // 成功且 aiGuidance 非空 → 返回
+    if (result.aiGuidance && result.aiGuidance.trim().length > 0) {
+      // 清理: trim + 去除多余空白
+      result.aiGuidance = result.aiGuidance.trim();
+      return result;
+    }
+
+    // aiGuidance 缺失但不是网络错 (200 但空) → 不重试
+    if (!result.error?.startsWith('HTTP 5') && !result.error?.startsWith('Network') && !result.error?.startsWith('Abort')) {
+      // 非 5xx/网络错 = 后端明确返回空, 不用重试
+      // 但确保 error 字段有值
+      if (!result.error) {
+        result.error = 'LLM returned empty content (no error message)';
+      }
+      return result;
+    }
+
+    // 否则重试前等一下
+    if (attempt < maxRetries) {
+      await new Promise((r) => setTimeout(r, 800));
+    }
+  }
+
+  return lastResult ?? { aiGuidance: null, error: 'Unknown error' };
+}
+
+async function fetchAIGuidanceOnce(
+  bundle: AssessmentBundle,
+  provider?: LLMProvider
 ): Promise<AIGuidanceResponse> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
 
   try {
-    // 精简 payload：只发评估需要的关键字段
     const payload = {
       windowDays: bundle.windowDays,
       overall: bundle.overall,
@@ -626,7 +663,7 @@ export async function fetchAIGuidance(
         advice: c.advice,
       })),
       trainingLoadTrend: bundle.trainingLoadTrend,
-      ...(options?.provider && { provider: options.provider }),
+      ...(provider && { provider }),
     };
 
     const resp = await fetch('/api/assess-ai', {
@@ -642,9 +679,127 @@ export async function fetchAIGuidance(
     }
     return (await resp.json()) as AIGuidanceResponse;
   } catch (err: unknown) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      return { aiGuidance: null, error: 'Abort: 前端 12s 超时' };
+    }
+    if (err instanceof TypeError) {
+      // fetch 网络错 (Failed to fetch / NetworkError)
+      return { aiGuidance: null, error: `Network: ${err.message}` };
+    }
     const msg = err instanceof Error ? err.message : String(err);
     return { aiGuidance: null, error: msg };
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+// ==================== v2.2.3 LLM 缓存 (localStorage) ====================
+
+const CACHE_KEY = 'sports-fair:ai-guidance:v1';
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 小时
+
+interface CacheEntry {
+  /** 缓存键 = windowDays + provider + bundle hash (cards 主值拼起来) */
+  key: string;
+  response: AIGuidanceResponse;
+  cachedAt: number;
+}
+
+/** 生成稳定 hash (基于关键字段), 避免 bundle 引用变就失效 */
+function bundleHash(bundle: AssessmentBundle): string {
+  const key = bundle.cards
+    .map((c) => `${c.key}:${c.main}:${c.severity}`)
+    .join('|');
+  // 简易 hash (djb2), 不追求密码学强度
+  let h = 5381;
+  for (let i = 0; i < key.length; i++) {
+    h = ((h << 5) + h + key.charCodeAt(i)) | 0;
+  }
+  return `${h}_w${bundle.windowDays}_t${(bundle.trainingLoadTrend ?? []).length}`;
+}
+
+function buildCacheKey(windowDays: 7 | 30, provider: LLMProvider, bundle: AssessmentBundle): string {
+  return `${windowDays}_${provider}_${bundleHash(bundle)}`;
+}
+
+function readCache(windowDays: 7 | 30, provider: LLMProvider, bundle: AssessmentBundle): AIGuidanceResponse | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const map: Record<string, CacheEntry> = JSON.parse(raw);
+    const key = buildCacheKey(windowDays, provider, bundle);
+    const entry = map[key];
+    if (!entry) return null;
+    if (Date.now() - entry.cachedAt > CACHE_TTL_MS) return null;
+    return entry.response;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(windowDays: 7 | 30, provider: LLMProvider, bundle: AssessmentBundle, response: AIGuidanceResponse): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    const map: Record<string, CacheEntry> = raw ? JSON.parse(raw) : {};
+    const key = buildCacheKey(windowDays, provider, bundle);
+    map[key] = { key, response, cachedAt: Date.now() };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(map));
+  } catch {
+    // localStorage 满了或 disabled, 静默
+  }
+}
+
+/**
+ * v2.2.3: 带 localStorage 缓存的 AI 建议获取
+ *
+ * 流程：cache hit → 直接返回；miss → fetch → 写 cache
+ * 失败响应不缓存（避免持续显示错误时也走缓存）
+ */
+export async function fetchAIGuidanceWithCache(
+  bundle: AssessmentBundle,
+  options: { provider: LLMProvider }
+): Promise<{ response: AIGuidanceResponse; fromCache: boolean }> {
+  // 1. 查 cache
+  const cached = readCache(bundle.windowDays, options.provider, bundle);
+  if (cached && cached.aiGuidance) {
+    return { response: cached, fromCache: true };
+  }
+
+  // 2. 调 LLM
+  const response = await fetchAIGuidance(bundle, { provider: options.provider, retries: 1 });
+
+  // 3. 写 cache (仅成功)
+  if (response.aiGuidance && response.aiGuidance.trim().length > 0) {
+    writeCache(bundle.windowDays, options.provider, bundle, response);
+  }
+
+  return { response, fromCache: false };
+}
+
+// ==================== v2.2.3 Provider 偏好持久化 ====================
+
+const PROVIDER_PREF_KEY = 'sports-fair:llm-provider-pref:v1';
+
+/** 读上次用的 provider, 找不到默认 mimo */
+export function loadProviderPref(): LLMProvider {
+  if (typeof window === 'undefined') return 'mimo';
+  try {
+    const v = localStorage.getItem(PROVIDER_PREF_KEY);
+    if (v === 'mimo' || v === 'openai' || v === 'anthropic') return v;
+  } catch {
+    // localStorage disabled
+  }
+  return 'mimo';
+}
+
+/** 写 provider 偏好, 供下次访问自动选中 */
+export function saveProviderPref(p: LLMProvider): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(PROVIDER_PREF_KEY, p);
+  } catch {
+    // localStorage disabled
   }
 }

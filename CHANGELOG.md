@@ -87,6 +87,37 @@ ANTHROPIC_API_KEY=sk-ant-...
   - 单用户应用下主要是防恶意 prompt 浪费 token, 不防 data exfil
 - **README LLM 配置章节**: 完整 env 变量表 + 3 家 provider 注册链接 + 加新 provider 步骤
 
+
+## [2.2.3] - 2026-06-13
+
+### 新增 (前端韧性 + UX 优化)
+- **localStorage 24h 缓存** (`fetchAIGuidanceWithCache`)
+  - key 维度: `windowDays_provider_bundleHash`, hash 基于 cards key/main/severity
+  - 同 bundle 同 provider 24h 内复用, 节省 LLM 费用
+  - 失败响应不写 cache (避免错误响应被反复用)
+  - 过期自动失效
+- **Provider 偏好持久化** (`loadProviderPref` / `saveProviderPref`)
+  - 用户上次选的 provider, 下次访问自动恢复
+  - localStorage 污染 (非法值) → fallback mimo
+- **AI 调用自动重试** (5xx/网络错时 1 次)
+  - 200 空内容 / 4xx 客户端错 → 不重试
+  - 重试间隔 800ms, 避免打爆 provider
+  - 错误分类细化: `HTTP 4xx/5xx` / `Network: ...` / `Abort: ...`
+- **空 aiGuidance 防御** (后端返回 200 但空)
+  - 自动归类为 error, 触发降级到静态建议
+  - 错误字段自动补默认值
+- **空数据兜底** (前端 edge case)
+  - 检测到 bundle.cards 全部 N/A → 显示黄色 banner, 引导用户录入数据
+  - 不浪费一次 LLM 调用
+- **缓存指示器**: AI 徽章右侧加 "📦cached" 标记
+- **空白行过滤**: 渲染 AI 建议时 `.filter(l => l.trim())`
+
+### 测试
+- 新增 `src/utils/__tests__/llmCache.test.ts` (8 cases)
+  - fetchAIGuidance: 重试/空/网络错/4xx 不重试
+  - loadProviderPref/saveProviderPref: 双向/污染 fallback
+  - fetchAIGuidanceWithCache: miss/hit/失败不缓存/provider 隔离
+
 ## [2.1.13] - 2026-06-12
 
 ### 新增 (按用户强烈反馈：标准 GitHub 流程)

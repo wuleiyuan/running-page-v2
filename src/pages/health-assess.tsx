@@ -5,7 +5,9 @@ import { useTheme } from '@/hooks/useTheme';
 import AssessmentCard from '@/components/HealthAssessment/AssessmentCard';
 import {
   assessHealth,
-  fetchAIGuidance,
+  fetchAIGuidanceWithCache,
+  loadProviderPref,
+  saveProviderPref,
   type AssessmentBundle,
   type AIGuidanceResponse,
   type LLMProvider,
@@ -16,6 +18,7 @@ import styles from './style.module.css';
  * 运动健康评估建议页 (2026-06-12)
  * v2.2.0: 接入 LLM (MiMo) 替换静态 overall 建议
  * v2.2.1: 支持 LLM provider 切换 (mimo / openai / anthropic)
+ * v2.2.3: localStorage 24h 缓存 + provider 偏好记忆 + 空数据兜底
  *
  * 路由: /health-assess
  * 数据源: health_stats.json (Apple HealthKit) + activities.json (运动记录)
@@ -34,12 +37,14 @@ const HealthAssessPage: React.FC = () => {
   const { theme } = useTheme();
   const [windowDays, setWindowDays] = useState<7 | 30>(7);
 
-  // v2.2.1: LLM provider 切换 (默认 mimo)
-  const [provider, setProvider] = useState<LLMProvider>('mimo');
+  // v2.2.3: 读 localStorage 恢复 provider 偏好
+  const [provider, setProviderState] = useState<LLMProvider>(() => loadProviderPref());
 
   // v2.2.0: AI 建议状态
   const [aiState, setAiState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
   const [aiResponse, setAiResponse] = useState<AIGuidanceResponse | null>(null);
+  /** v2.2.3: 标记本次响应来自 cache, 避免重复点重试 */
+  const [fromCache, setFromCache] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -51,16 +56,24 @@ const HealthAssessPage: React.FC = () => {
     [windowDays]
   );
 
-  // v2.2.0: bundle 或 provider 变就拉 AI 建议
+  // v2.2.3: 包装 setProvider 同步写 localStorage
+  const setProvider = (p: LLMProvider) => {
+    setProviderState(p);
+    saveProviderPref(p);
+  };
+
+  // v2.2.0/2.2.3: bundle 或 provider 变就拉 AI 建议 (走 cache)
   useEffect(() => {
     let cancelled = false;
     setAiState('loading');
     setAiResponse(null);
+    setFromCache(false);
 
-    fetchAIGuidance(bundle, { provider }).then((resp) => {
+    fetchAIGuidanceWithCache(bundle, { provider }).then(({ response, fromCache: isCached }) => {
       if (cancelled) return;
-      setAiResponse(resp);
-      if (resp.aiGuidance) {
+      setAiResponse(response);
+      setFromCache(isCached);
+      if (response.aiGuidance && response.aiGuidance.trim().length > 0) {
         setAiState('ok');
       } else {
         setAiState('error');
@@ -71,6 +84,9 @@ const HealthAssessPage: React.FC = () => {
       cancelled = true;
     };
   }, [bundle, provider]);
+
+  // v2.2.3: 边缘 case - 评估数据全空/异常时, AI 提示用户先录入数据
+  const isEmptyData = bundle.cards.every((c) => c.main === 'N/A' || c.main === '无数据');
 
   return (
     <Layout>
@@ -118,6 +134,19 @@ const HealthAssessPage: React.FC = () => {
           ))}
         </div>
 
+        {/* v2.2.3: 空数据友好提示 */}
+        {isEmptyData && (
+          <section className={styles.emptyDataBanner}>
+            <p>
+              ⚠️ <strong>暂无可评估数据</strong>。
+              请先同步 Apple HealthKit 数据，或导入运动记录（GPX / TCX / FIT 文件）。
+            </p>
+            <p className={styles.emptyDataSub}>
+              健康评估需要至少 {windowDays} 天的 {bundle.cards.length} 项核心指标。
+            </p>
+          </section>
+        )}
+
         {/* 综合建议 (v2.2.0: 优先显示 LLM 个性化建议) */}
         <section className={styles.overallSection}>
           <div className={styles.overallHeader}>
@@ -127,9 +156,10 @@ const HealthAssessPage: React.FC = () => {
             {aiState === 'ok' && aiResponse?.model && (
               <span
                 className={styles.aiBadge}
-                title={`由 ${PROVIDER_LABELS[aiResponse.provider ?? 'mimo']} 提供`}
+                title={`由 ${PROVIDER_LABELS[aiResponse.provider ?? 'mimo']} 提供${fromCache ? '（来自本地缓存）' : ''}`}
               >
                 {PROVIDER_LABELS[aiResponse.provider ?? 'mimo']} · {aiResponse.model}
+                {fromCache && <span className={styles.cacheMark}> · 📦cached</span>}
               </span>
             )}
           </div>
@@ -142,7 +172,7 @@ const HealthAssessPage: React.FC = () => {
           )}
           {aiState === 'ok' && aiResponse?.aiGuidance && (
             <div className={styles.overallText}>
-              {aiResponse.aiGuidance.split('\n').map((line, i) => (
+              {aiResponse.aiGuidance.split('\n').filter((l) => l.trim()).map((line, i) => (
                 <p key={i} style={{ margin: i === 0 ? 0 : '0.5em 0 0' }}>
                   {line}
                 </p>

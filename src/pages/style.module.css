@@ -322,6 +322,35 @@
   color: #fff;
 }
 
+/* v2.2.3: 空数据提示 banner */
+.emptyDataBanner {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  color: #78350f;
+}
+
+.emptyDataBanner p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.emptyDataSub {
+  margin-top: 6px !important;
+  font-size: 0.85rem !important;
+  opacity: 0.85;
+}
+
+/* v2.2.3: 缓存标识 */
+.cacheMark {
+  font-size: 0.65rem;
+  opacity: 0.85;
+  margin-left: 4px;
+}
+
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
