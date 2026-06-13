@@ -11,6 +11,28 @@
 - 2024-09~2025-08 缺失数据期（Apple Watch 漏戴根因）
 - 训练强度（HR / 配速）维度纳入训练负荷评估
 
+## [2.2.0] - 2026-06-13
+
+### 新增 (按用户 6/11 决策: 接入 LLM 替换静态 AI 建议)
+- **Vercel Function** `api/assess-ai.ts`: Edge runtime, 调小米 MiMo (`api.xiaomimimo.com`)
+  - 10s 超时 + 60s CDN cache 兜底
+  - 失败降级到 `bundle.overall` 静态建议
+  - Key 从 `MIMO_API_KEY` 环境变量读，代码不入完整 key
+  - 模型可配: `MIMO_MODEL` (默认 `mimo-v2-flash`)
+- **健康评估页** (`/health-assess`) 加 LLM 个性化建议区
+  - 4 状态: idle / loading(脉冲点) / ok(显示 AI 建议+模型徽章) / error(降级静态+错误原因)
+  - 切换 7/30 天窗口自动重新拉 AI 建议
+  - 加载中不阻塞页面, 静态数据先用, AI 覆盖整体建议
+- **前端 wrapper** `fetchAIGuidance()` 12s 超时 + 取消保护
+- **UI**:
+  - 🤖 AI 个性化建议 标题 + 模型名徽章 (紫渐变)
+  - 加载中脉冲点动画
+  - 降级时显示 "(AI 建议暂不可用...)" 灰色小字
+- **依赖**: `@vercel/node` (devDep)
+
+### 待用户配置
+- Vercel dashboard → Project → Settings → Environment Variables 加 `MIMO_API_KEY`
+
 ## [2.1.13] - 2026-06-12
 
 ### 新增 (按用户强烈反馈：标准 GitHub 流程)

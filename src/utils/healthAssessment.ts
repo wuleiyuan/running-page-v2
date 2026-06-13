@@ -572,3 +572,63 @@ export function assessHealth(opts: AssessOptions = {}): AssessmentBundle {
     trainingLoadTrend: trainingLoadResult.trend,
   };
 }
+
+// ==================== v2.2.0 LLM 增强 ====================
+
+/**
+ * AI 建议接口响应
+ */
+export interface AIGuidanceResponse {
+  aiGuidance: string | null;
+  model?: string;
+  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
+  generatedAt?: string;
+  error?: string;
+}
+
+/**
+ * 调 Vercel Function /api/assess-ai 拿 LLM 个性化建议
+ *
+ * - 超时 12s（前端耐心阈值）
+ * - 失败返回 { aiGuidance: null, error }，不抛
+ * - 自动推断 endpoint：window.location.origin + /api/assess-ai
+ */
+export async function fetchAIGuidance(bundle: AssessmentBundle): Promise<AIGuidanceResponse> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12_000);
+
+  try {
+    // 精简 payload：只发评估需要的关键字段
+    const payload = {
+      windowDays: bundle.windowDays,
+      overall: bundle.overall,
+      cards: bundle.cards.map((c) => ({
+        key: c.key,
+        title: c.title,
+        main: c.main,
+        sub: c.sub,
+        severity: c.severity,
+        advice: c.advice,
+      })),
+      trainingLoadTrend: bundle.trainingLoadTrend,
+    };
+
+    const resp = await fetch('/api/assess-ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      return { aiGuidance: null, error: `HTTP ${resp.status}: ${errText.slice(0, 200)}` };
+    }
+    return (await resp.json()) as AIGuidanceResponse;
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return { aiGuidance: null, error: msg };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
