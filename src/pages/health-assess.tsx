@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import Layout from '@/components/Layout';
 import { useTheme } from '@/hooks/useTheme';
 import AssessmentCard from '@/components/HealthAssessment/AssessmentCard';
+import AIDiagnosticsPanel from '@/components/HealthAssessment/AIDiagnosticsPanel';
 import {
   assessHealth,
   fetchAIGuidanceWithCache,
@@ -147,6 +148,9 @@ const HealthAssessPage: React.FC = () => {
           </section>
         )}
 
+        {/* v2.2.4: AI 配置诊断面板 - AI 出错时自动展开 */}
+        <AIDiagnosticsPanel autoOpenOnError={aiState === 'error'} />
+
         {/* 综合建议 (v2.2.0: 优先显示 LLM 个性化建议) */}
         <section className={styles.overallSection}>
           <div className={styles.overallHeader}>
@@ -185,18 +189,13 @@ const HealthAssessPage: React.FC = () => {
               <p className={styles.aiFallback}>
                 （AI 建议暂不可用
                 {aiResponse?.requestId && <code className={styles.requestId}> [{aiResponse.requestId.slice(0, 8)}]</code>}
-                ：{aiResponse?.error || '未知错误'}，已显示静态建议）
+                ：{aiResponse?.error || '未知错误'}，已显示静态建议。请展开上方 "AI 配置诊断" 排查。）
               </p>
               {aiResponse?.hint && (
                 <p className={styles.aiHint}>
                   💡 {aiResponse.hint}
                 </p>
               )}
-              <p className={styles.aiCheckLink}>
-                <a href="/api/health-check" target="_blank" rel="noopener noreferrer">
-                  查看 AI 配置状态 →
-                </a>
-              </p>
             </>
           )}
         </section>

@@ -88,6 +88,31 @@ ANTHROPIC_API_KEY=sk-ant-...
 - **README LLM 配置章节**: 完整 env 变量表 + 3 家 provider 注册链接 + 加新 provider 步骤
 
 
+
+## [2.2.4] - 2026-06-13
+
+### 新增 (health-check UI 化 + 测试覆盖加深)
+- **`AIDiagnosticsPanel` 折叠式组件** (`src/components/HealthAssessment/`)
+  - 默认折叠, 点击展开
+  - `autoOpenOnError={true}` 时 AI 错误自动展开 (用户场景优先)
+  - 表格化展示 3 家 provider 状态 (name / envKeyName / hasKey / model)
+  - 当前激活 provider 高亮, hint 黄色 banner
+  - 失败时内联重试按钮 (5s 超时)
+- **`healthCheckClient.ts`**: 客户端 health-check fetcher (5s 超时)
+- **vitest 配置升级**
+  - include 路径纳入 `api/__tests__/**`
+  - `environmentMatchGlobs` 让 .tsx 组件测试走 happy-dom
+  - 新增 `vitest.setup.ts` 加载 jest-dom matchers
+- **测试覆盖** (新 3 个测试文件, 共 ~22 cases)
+  - `api/__tests__/sanitize.test.ts`: 字段截断/敏感 pattern/混合场景
+  - `api/__tests__/e2e.test.ts`: 8 cases 模拟前端 → /api/assess-ai → provider 完整路径
+  - `src/components/HealthAssessment/__tests__/AIDiagnosticsPanel.test.tsx`: 7 cases 组件行为
+- **devDep 装**: @testing-library/react / @testing-library/jest-dom / happy-dom
+
+### 改 UX
+- 健康评估页错误时, health-check 链接替换为组件嵌入 (直接看到 provider 状态)
+- 错误文案微调: "请展开上方 'AI 配置诊断' 排查"
+
 ## [2.2.3] - 2026-06-13
 
 ### 新增 (前端韧性 + UX 优化)
