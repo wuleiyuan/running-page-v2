@@ -150,8 +150,21 @@ jobs:
         run: |
           python run_page/gen_svg.py --from-db --type year_summary --output assets/year_summary.svg --athlete "${{ env.ATHLETE }}"
 
+      - name: "Safety check - prevent data cliff"
+        # 2026-06-13: v2.2.5 — 拦截 sync bug 删数据
+        # 6/12 实战: chore: sync sports data 把 793 → 86 条, 覆盖 5 年历史
+        # 保护: 对比 HEAD~ 与 working tree 的 activities.json, 下跌 > 30% (且 ≥ 50 条) 直接 fail
+        # 这样 sync 不会真的把烂数据 commit/push 到 master
+        if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
+        run: |
+          cd /home/runner/work/sports-fair/sports-fair
+          echo "=== Activities safety check ==="
+          python3 scripts/check_activities_safety.py
+          echo "=== Safety check passed ==="
+
       - name: Push new runs
         if: env.SAVE_DATA_IN_GITHUB_CACHE != 'true'
+        needs: ["safety check - prevent data cliff"]
         env:
           # 2026-06-10: 确保 git push 用的是 GITHUB_TOKEN 而非残留凭据
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
